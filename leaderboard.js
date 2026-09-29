@@ -12,7 +12,7 @@
   function row(entry, rank, source){
     return `<article class="row">
       <div class="rank">#${rank}</div>
-      <div class="model"><b><a href="./model.html?name=${encodeURIComponent(entry.model || entry.participant || "Unknown")}">${esc(entry.model || entry.participant || "Unknown")}</a></b><small>${esc(entry.provider || source || "")}</small></div>
+      <div class="model"><b><a href="./model.html?name=${encodeURIComponent(entry.model || entry.participant || "Unknown")}">${esc(entry.model || entry.participant || "Unknown")}</a></b><small>${entry.participant ? "@"+esc(entry.participant)+" · " : ""}${esc(entry.provider || source || "")}</small></div>
       <div class="cell">存活 <b>${num(entry.days)}</b><small>天</small></div>
       <div class="cell">分数 <b>${num(entry.score)}</b><small>/100</small></div>
       <div class="cell">准确率 <b>${num(entry.avg_accuracy)}</b><small>%</small></div>

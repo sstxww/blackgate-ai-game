@@ -1,0 +1,97 @@
+:root{
+  color-scheme:dark;
+  --bg:#0c0c0a;
+  --panel:#151510;
+  --panel2:#1d1b16;
+  --line:#383329;
+  --line2:#514838;
+  --text:#eee8dc;
+  --muted:#9f9789;
+  --gold:#d8b66d;
+  --gold2:#9d7a3f;
+  --red:#7f2924;
+  --red2:#a54037;
+  --green:#79a887;
+  --blue:#7f99b4;
+  --purple:#9b82bd;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{min-height:100vh;background:radial-gradient(circle at 85% 0,#64271d2c,transparent 26%),var(--bg)}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(430px,.8fr);height:100vh}
+.game-pane{min-width:0;background:#070706;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.game-topbar{height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#121210;border-bottom:1px solid var(--line);font-size:12px;flex:none}
+.brand{color:var(--gold);text-decoration:none;font-weight:900;letter-spacing:.06em}
+.mode-pill{display:inline-flex;margin-left:9px;border:1px solid #534a39;color:#cdbc86;border-radius:999px;padding:3px 7px;font-size:9px;letter-spacing:.1em}
+.game-links{display:flex;gap:12px}.game-links a{color:var(--muted);text-decoration:none}.game-links a:hover{color:var(--gold)}
+#gameFrame{border:0;width:100%;height:calc(100vh - 46px);display:block;background:#0a0a08}
+.control-pane{overflow:auto;padding:26px;background:linear-gradient(180deg,#171713,#0f0f0d)}
+.intro h1{font:800 34px/1.05 Georgia,"Songti SC",serif;margin:6px 0 8px}
+.intro p{margin:0 0 17px;color:var(--muted);line-height:1.65;font-size:13px}
+.eyebrow{font-size:10px;letter-spacing:.16em;color:var(--gold);font-weight:800}
+.privacy-banner{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:start;border:1px solid #465d4a;background:#132018;border-radius:13px;padding:13px;margin:0 0 13px}
+.privacy-banner .lock{font-size:22px}.privacy-banner b{color:#bfe0c6;font-size:13px}.privacy-banner p{color:#99b6a0;margin:4px 0 0;font-size:11px;line-height:1.55}
+.card,.run-card{border:1px solid var(--line);background:rgba(23,23,19,.9);border-radius:14px;padding:15px;margin:11px 0;box-shadow:0 14px 40px #0002}
+.card-head,.run-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.card-head>div:first-child,.run-head>div:first-child{display:flex;align-items:center;gap:9px}
+.card h2,.run-card h2{font-size:15px;margin:0}.step{width:26px;height:26px;display:grid;place-items:center;border:1px solid #665a43;color:var(--gold);border-radius:8px;font-size:10px;font-weight:800}
+.badge{display:inline-flex;align-items:center;border:1px solid #4a4438;background:#11110e;color:#aaa191;border-radius:999px;padding:4px 8px;font-size:10px;white-space:nowrap}
+.badge.ok{border-color:#53725a;color:#a7d0b0;background:#122017}.badge.bad{border-color:#8e453e;color:#e8a49c;background:#281413}.badge.running{border-color:#8c7344;color:#e2c77e;background:#241e13}.badge.paused{border-color:#5c6688;color:#aeb9e2;background:#161a28}.badge.done{border-color:#58715f;color:#b4d5bc;background:#142018}
+.field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.field>span{font-size:11px;color:#cbc2b2;font-weight:700}
+.field small{font-size:10px;color:#7f786c;line-height:1.45}
+input,select,textarea{width:100%;border:1px solid var(--line);background:#0d0d0b;color:var(--text);border-radius:9px;padding:9px 10px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#77684c;box-shadow:0 0 0 2px #77684c22}
+select:disabled{opacity:.45}
+textarea{resize:vertical;min-height:92px;line-height:1.5;font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;font-size:11px}
+.rules-box{min-height:210px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.secret-row{display:grid;grid-template-columns:1fr auto;gap:6px}
+button,.small-btn{border:1px solid #494337;background:#232019;color:var(--text);border-radius:9px;padding:8px 11px;font-weight:700}
+button:hover:not(:disabled){border-color:#776b54}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.primary{background:linear-gradient(#8c342d,#6e241f);border-color:#a9443a;color:#fff}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.big{padding:11px 16px}
+.danger-btn{border-color:#75423e;color:#d99b95;background:#251514}
+.small-btn{font-size:11px;padding:7px 9px}
+.button-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+.button-row.compact{margin:0}
+.status-text{font-size:11px;color:var(--muted)}
+.hint-box{margin-top:10px;border-left:3px solid #9a6b3d;background:#22190f;color:#c3aa86;padding:9px 10px;border-radius:7px;font-size:11px;line-height:1.55}
+.advanced{margin-top:10px;border-top:1px dashed #343129;padding-top:10px}
+.advanced summary{cursor:pointer;color:#b7ad9d;font-size:11px}
+.run-card{background:linear-gradient(180deg,#1c1a14,#11110e);border-color:#5c5038}
+.run-head{margin-bottom:13px}.run-head h2{font:700 18px Georgia,"Songti SC",serif}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.metric-grid>div{background:#0e0e0c;border:1px solid #302d26;border-radius:10px;padding:9px}
+.metric-grid span{display:block;color:#777064;font-size:9px}.metric-grid b{display:block;margin-top:4px;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.run-actions{margin-top:13px}
+.progress-line{height:6px;border:1px solid #3b362c;background:#0c0c0a;border-radius:999px;overflow:hidden;margin-top:12px}.progress-line i{display:block;height:100%;width:0;background:linear-gradient(90deg,#846a39,#d0b067);transition:width .25s}
+.run-status{font-size:11px;color:#a49b8c;line-height:1.55;margin:9px 0 0}
+.logs-card{padding-bottom:10px}
+.log-list{display:flex;flex-direction:column;gap:7px;max-height:430px;overflow:auto;padding-right:3px}
+.log-empty{padding:30px 12px;text-align:center;color:#6f695f;border:1px dashed #302d26;border-radius:10px;font-size:11px}
+.log-item{border:1px solid #312f28;border-radius:10px;background:#10100e;padding:10px}
+.log-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.log-action{font-weight:900;font-size:12px}.log-action.allow{color:#8fc49a}.log-action.reject{color:#d8877d}.log-action.search{color:#dfbd68}.log-action.isolate{color:#b89ad2}.log-action.next_day{color:#8da8ca}
+.log-meta{font-size:9px;color:#777064}
+.log-reason{font-size:11px;color:#c7beaf;line-height:1.5;margin-top:5px}
+.log-detail{display:flex;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:9px;color:#80796e}
+.log-error{border-color:#70413c;background:#211211}.log-error .log-reason{color:#e0a09a}
+.log-warning{border-color:#675631;background:#211b10}
+.footer-note{font-size:10px;line-height:1.55;color:#777064;padding:5px 2px 24px}.footer-note b{color:#aaa08e}
+@media(max-width:1250px){
+  .app-shell{grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr)}
+  .metric-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:920px){
+  .app-shell{display:block;height:auto}
+  .game-pane{height:62vh;border-right:0;border-bottom:1px solid var(--line)}
+  #gameFrame{height:calc(62vh - 46px)}
+  .control-pane{overflow:visible}
+  .two-col{grid-template-columns:1fr}
+}

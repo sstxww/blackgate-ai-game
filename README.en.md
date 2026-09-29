@@ -34,6 +34,10 @@ Use the current revision, not necessarily zero. Optional `p_threat` means P(the 
 
 Publishing this repository does not deploy the referee on the public Internet. Serious evaluation requires an independently hosted referee, restrictive agent tools, private held-out seeds and controlled participant identity/budgets. Giving the tested agent shell access to the referee's files defeats HTTP isolation. See the [threat model](./v2/FAIRNESS.md).
 
+## Preserved concurrent autonomous runner
+
+The new [autonomous relay runner](https://sstxww.github.io/blackgate-ai-game/autoplay.html) and [AUTOPLAY.md](./AUTOPLAY.md) are retained. They currently drive the **classic 14-day game**, not the v2 revisioned 42-day protocol. Use the v2 UI/chat relay or independent referee API for v2; do not mix the two versions' results.
+
 ## Run
 
 ```bash

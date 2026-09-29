@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://sstxww.github.io/blackgate-ai-game/play.html"><b>🎮 在线挑战 + 自动复盘</b></a>
   ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 让聊天 AI 玩</b></a>
+  <a href="https://sstxww.github.io/blackgate-ai-game/autoplay.html"><b>🤖 AI 全自动测试</b></a>
   ·
   <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 AI 排行榜</b></a>
   ·
@@ -40,12 +40,116 @@
 <p align="center">
   <a href="https://sstxww.github.io/blackgate-ai-game/"><b>🎮 在线玩</b></a>
   ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 让 ChatGPT / Claude / Gemini / Jev 玩</b></a>
+  <a href="https://sstxww.github.io/blackgate-ai-game/autoplay.html"><b>🤖 接入中转站让 AI 自己跑</b></a>
   ·
   <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 排行榜</b></a>
   ·
   <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 赛后复盘</b></a>
 </p>
+
+---
+
+## 🤖 AI 自主测试（推荐）
+
+打开：
+
+**https://sstxww.github.io/blackgate-ai-game/autoplay.html**
+
+这不是“复制一回合、点一次”的手动模式。配置一次以后，AI 会自己连续运行直到本局结束：
+
+```text
+中转站 URL
+   +
+API Key
+   ↓
+GET /models 获取模型
+   ↓
+选择模型 + 推理等级
+   ↓
+注入自定义规则提示词
+   ↓
+填写用户名
+   ↓
+开始
+   ↓
+AI 自动：读状态 → 推理 → 返回动作 → 游戏执行 → 下一案
+   ↓
+直到任期结束
+   ↓
+日志 + 复盘报告 + 本机排行榜
+```
+
+### 模型兼容
+
+自主测试台采用 **OpenAI-Compatible 中转接口**。项目不维护一张写死的模型名单，而是直接从你的中转站实时读取 `/models`：
+
+> **你的中转站能提供什么模型，Blackgate 就能选择什么模型。**
+
+因此可用于 OpenAI、Claude、Gemini、Grok，以及 DeepSeek、Qwen、GLM、Kimi、MiniMax、豆包、混元等国产/海外模型，只要这些模型由你的中转站以兼容接口暴露。
+
+页面也内置常见接口预设，同时始终允许填写任意自定义 URL。
+
+### 可选推理等级
+
+目前界面可选：
+
+- Auto
+- Low
+- Medium
+- High
+- Extra High / xhigh
+
+兼容接口会发送 `reasoning_effort`（Responses 模式使用 reasoning 配置）。如果某个中转站不接受该字段，页面会自动去掉参数重试，同时把你选择的推理等级保留在系统提示词里，并在日志中标记兼容性降级。
+
+### 自定义规则提示词
+
+用户可以完整修改规则 / System Prompt。Blackgate 只会额外附加一个很小的机器动作协议，让模型返回：
+
+```json
+{"action":"allow|reject|search|isolate|next_day","reason":"简短理由","confidence":85}
+```
+
+不会要求模型输出详细思维链。
+
+### API Key 隐私
+
+**Blackgate 不保存 API Key。**
+
+自主测试网页不会把 API Key 写入：
+
+- localStorage
+- IndexedDB
+- Cookie
+- 运行日志
+- 排行榜
+- GitHub
+
+Key 只存在于当前网页内存和浏览器直接发往你填写的 API URL 的请求头中。页面离开后内存中的 Key 会被释放，也可以随时点击“清除”。
+
+日志只保存经过脱敏的 API URL、模型名、动作、简短理由、推理等级、延迟和 Token 用量。
+
+> GitHub Pages 是静态网页，无法替中转站绕过浏览器 CORS。如果你的接口禁止网页跨域，请使用支持 CORS 的中转站，或使用仓库中的本地 Runner。
+
+### 自动日志
+
+每一步都会记录：
+
+- Day / Case
+- 模型动作
+- 模型简短理由
+- 置信度
+- 推理等级
+- 请求延迟
+- Token 用量
+- API 协议
+- 错误与自动重试
+- 日结反馈
+
+日志可直接导出 JSON，而且不会包含 API Key。
+
+完整接口说明见 **[AUTOPLAY.md](./AUTOPLAY.md)**。
+
+旧的手动 Chat Relay 仍保留在 [chat.html](https://sstxww.github.io/blackgate-ai-game/chat.html)，用于没有 API 接口时的备用玩法。
 
 ---
 
