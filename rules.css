@@ -1,0 +1,92 @@
+/* Player-facing manual only. No changes to game rules or scoring. */
+.topbar { grid-template-columns: 1fr auto 214px; }
+.toolbar .rules-toolbar-btn { width: auto; min-width: 94px; padding: 0 12px; font-size: 13px; white-space: nowrap; }
+.start-actions { flex-wrap: wrap; }
+#startOverlay { overflow-y: auto; }
+#startOverlay .start-card { max-height: calc(100vh - 56px); max-height: calc(100dvh - 56px); overflow-y: auto; }
+.quickstart-note { margin: 18px 0; padding: 15px 18px; border: 1px solid #756039; border-left: 3px solid var(--amber); background: #272115; text-align: left; }
+.quickstart-note strong { display: block; color: var(--amber2); font-size: 14px; margin-bottom: 6px; }
+.quickstart-note p { color: #d8ccb7; font-size: 13px; line-height: 1.8; margin: 0; }
+.quickstart-note small { display: block; color: #b4a892; font-size: 12px; line-height: 1.7; margin-top: 6px; }
+.rules-rail-btn { width: 100%; margin: 12px 0 0; padding: 10px 8px; font-size: 12px; }
+#helpOverlay { z-index: 120; padding: 20px; }
+#helpOverlay .rules-manual { width: min(960px, calc(100vw - 40px)); max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); padding: 0; display: flex; flex-direction: column; overflow: hidden; text-align: left; }
+.rules-header { position: relative; flex: 0 0 auto; padding: 23px 66px 18px 28px; border-bottom: 1px solid #51452f; background: linear-gradient(110deg, #302719, #181914); }
+#helpOverlay .rules-header h2 { margin: 5px 0 6px; font-size: 27px; }
+.rules-header p { margin: 0; color: #c0b5a0; font-size: 13px; line-height: 1.7; }
+#helpOverlay .close-btn { top: 22px; right: 19px; width: 38px; height: 38px; }
+.rules-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 22px 28px 28px; scrollbar-color: #8b7141 #141611; scrollbar-gutter: stable; }
+.rules-scroll :is(p, li, dd, td) { font-size: 14px; line-height: 1.85; }
+.rules-scroll p { color: #c6bda9; margin: 8px 0 12px; }
+.rules-scroll strong, .rules-scroll b { color: #eee0c3; }
+.rules-scroll h3 { font: 700 19px Georgia, "Songti SC", serif; color: #e8ce93; margin: 0 0 12px; }
+.rules-scroll h4 { margin: 0 0 7px; font-size: 15px; color: #eed4a0; }
+.rules-section { margin: 0 0 24px; scroll-margin-top: 12px; }
+.rules-goal { border: 1px solid #6c5a38; padding: 16px 18px; background: #272215; }
+.rules-goal h3 { margin-bottom: 6px; }
+.rules-goal p { margin: 0; }
+.rules-calm { padding: 10px 13px; border-left: 3px solid #85a98c; background: #1b2920; }
+.rules-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 22px; }
+.rules-nav button { border: 1px solid #5d513b; background: #211e16; color: #dfc792; font-size: 12px; padding: 8px 11px; border-radius: 4px; cursor: pointer; }
+.rules-nav button:hover { background: #38301e; }
+.rules-flow { list-style: none; counter-reset: duty; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; padding: 0; }
+.rules-flow li { counter-increment: duty; position: relative; padding: 13px 13px 13px 48px; border: 1px solid #403c31; background: #191a15; color: #c6bda9; }
+.rules-flow li::before { content: counter(duty); position: absolute; top: 14px; left: 13px; display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid #8a7144; color: #e0bd79; font: 700 13px Georgia, serif; }
+.rules-flow strong { display: block; }
+.rules-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rules-action { padding: 15px; border: 1px solid #4b4436; border-top: 3px solid var(--amber); background: #191a15; }
+.rules-action.allow { border-top-color: #82ad89; }
+.rules-action.reject { border-top-color: #cc796e; }
+.rules-action.isolate { border-top-color: #ad90c3; }
+.rules-action p { margin: 6px 0; }
+.rules-action .rules-cost { color: #e5c887; font-size: 13px; margin-top: 10px; }
+.rules-key { display: inline-grid; place-items: center; border: 1px solid #766242; border-radius: 3px; background: #282319; color: #eed5a0; min-width: 25px; height: 25px; margin-right: 6px; font: 13px ui-monospace, monospace; }
+.rules-warning { padding: 11px 14px; border-left: 3px solid #cf7c69; background: #30201a; }
+.rules-details { border: 1px solid #494130; margin-bottom: 12px; background: #161713; scroll-margin-top: 12px; }
+.rules-details > summary { padding: 15px 17px; cursor: pointer; color: #e6ca91; font-size: 15px; font-weight: 650; line-height: 1.65; }
+.rules-details > summary:hover { background: #272319; }
+.rules-details > summary:focus-visible { outline: 2px solid var(--amber2); outline-offset: -3px; }
+.rules-details[open] > summary { border-bottom: 1px solid #403b2f; }
+.rules-detail-body { padding: 7px 17px 16px; }
+.rules-detail-body ul, .rules-detail-body ol { padding-left: 23px; color: #c6bda9; margin: 12px 0; }
+.rules-detail-body li { margin: 6px 0; }
+.rules-table-wrap { overflow-x: auto; margin: 12px 0; }
+.rules-table { width: 100%; border-collapse: collapse; text-align: left; }
+.rules-table caption { text-align: left; font-size: 13px; color: #b9ae98; margin-bottom: 8px; }
+.rules-table th { color: #e2c88e; background: #252218; font-size: 13px; font-weight: 600; }
+.rules-table th, .rules-table td { border: 1px solid #484031; padding: 10px 12px; vertical-align: top; }
+.rules-table td { color: #c6bda9; font-size: 13px; }
+.rules-table th:first-child { min-width: 86px; }
+.rules-examples { display: grid; gap: 10px; margin: 12px 0; }
+.rules-example { padding: 12px 14px; border: 1px solid #454031; background: #1e1e17; }
+.rules-example p { margin: 4px 0 0; }
+.rules-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 28px; flex: 0 0 auto; border-top: 1px solid #51452f; background: #191a14; }
+.rules-footer small { color: #b2a690; font-size: 12px; line-height: 1.6; }
+.rules-footer .primary-btn { white-space: nowrap; }
+@media (max-width: 700px) {
+  #helpOverlay { padding: 10px; }
+  #helpOverlay .rules-manual { width: calc(100vw - 20px); max-height: calc(100vh - 20px); max-height: calc(100dvh - 20px); }
+  .rules-header { padding: 18px 57px 14px 17px; }
+  #helpOverlay .rules-header h2 { font-size: 22px; }
+  #helpOverlay .close-btn { top: 15px; right: 12px; width: 34px; height: 34px; }
+  .rules-header .eyebrow { font-size: 9px; letter-spacing: 1px; }
+  .rules-scroll { padding: 17px 16px; scrollbar-gutter: auto; }
+  .rules-flow, .rules-action-grid { grid-template-columns: 1fr; }
+  .rules-scroll :is(p, li, dd) { font-size: 14px; }
+  .rules-footer { padding: 12px 16px; }
+  .rules-footer small { max-width: 55%; }
+  .rules-footer .primary-btn { padding: 10px 12px; font-size: 13px; }
+  #startOverlay { padding: 12px; }
+  #startOverlay .start-card { width: calc(100vw - 24px); padding: 22px 19px; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); }
+  #startOverlay .crest { width: 54px; height: 54px; margin-bottom: 22px; }
+  #startOverlay h2 { font-size: 26px; }
+  #startOverlay .briefing-grid { gap: 5px; }
+  #startOverlay .briefing-grid div { padding: 9px 5px; }
+  #startOverlay .briefing-grid span { line-height: 1.7; }
+  .quickstart-note { padding: 12px; }
+  .difficulty-select { grid-template-columns: 1fr; }
+  .difficulty-select button { padding: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rules-scroll { scroll-behavior: auto; }
+}

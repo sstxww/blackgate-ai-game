@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#100f0d" />
+  <title>地下城安全审查员</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./rules.css" />
+</head>
+<body>
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="arch arch-left"></div>
+    <div class="arch arch-right"></div>
+    <div class="torch torch-a"><span></span></div>
+    <div class="torch torch-b"><span></span></div>
+    <div class="dust"></div>
+  </div>
+
+  <main class="game-shell" id="gameShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-seal">审</div>
+        <div>
+          <div class="eyebrow">BLACKGATE ENTRY AUTHORITY · 地下城第七门</div>
+          <h1>地下城安全审查员</h1>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <span class="tiny-label">值勤日</span>
+        <strong id="dayText">第 1 天</strong>
+        <span id="caseCounter">0 / 0</span>
+      </div>
+
+      <div class="toolbar">
+        <button class="icon-btn" id="soundBtn" title="音乐 / 音效" aria-label="音乐 / 音效">♫</button>
+        <button class="icon-btn rules-toolbar-btn" id="helpBtn" title="游戏规则与新手说明" aria-label="打开游戏规则说明" aria-haspopup="dialog" aria-controls="helpOverlay">? 规则说明</button>
+        <button class="icon-btn" id="restartBtn" title="重新开始" aria-label="重新开始">↻</button>
+      </div>
+    </header>
+
+    <section class="stat-strip" aria-label="城邦状态">
+      <div class="stat-card">
+        <span>城库</span>
+        <strong id="goldStat">120</strong>
+        <small>G</small>
+      </div>
+      <div class="stat-card meter-stat">
+        <span>治安</span>
+        <div class="meter"><i id="securityBar"></i></div>
+        <strong id="securityStat">72</strong>
+      </div>
+      <div class="stat-card meter-stat">
+        <span>经济</span>
+        <div class="meter"><i id="economyBar"></i></div>
+        <strong id="economyStat">68</strong>
+      </div>
+      <div class="stat-card meter-stat">
+        <span>民意</span>
+        <div class="meter"><i id="publicBar"></i></div>
+        <strong id="publicStat">64</strong>
+      </div>
+      <div class="stat-card meter-stat">
+        <span>渗透警戒</span>
+        <div class="meter danger"><i id="threatBar"></i></div>
+        <strong id="threatStat">低</strong>
+      </div>
+      <div class="stat-card resource-stat">
+        <span>搜查令</span>
+        <strong id="searchStat">4</strong>
+        <small>份</small>
+      </div>
+      <div class="stat-card resource-stat">
+        <span>隔离位</span>
+        <strong id="cellStat">3</strong>
+        <small>格</small>
+      </div>
+    </section>
+
+    <section class="desk-grid">
+      <aside class="left-rail">
+        <section class="panel directive-panel">
+          <div class="panel-title-row">
+            <span class="panel-kicker">TODAY'S ORDERS</span>
+            <span class="red-pin"></span>
+          </div>
+          <h2>今日审查令</h2>
+          <div id="directives" class="directive-list"></div>
+        </section>
+
+        <section class="panel queue-panel">
+          <div class="panel-title-row">
+            <h2>候检队列</h2>
+            <span id="queueRemaining" class="badge">0 人</span>
+          </div>
+          <div id="queueList" class="queue-list"></div>
+        </section>
+
+        <section class="panel history-panel">
+          <div class="panel-title-row">
+            <h2>值勤记录</h2>
+            <span class="muted">最近 6 条</span>
+          </div>
+          <div id="decisionLog" class="decision-log"></div>
+        </section>
+      </aside>
+
+      <section class="main-desk">
+        <div class="window-scene">
+          <div class="counter-light"></div>
+          <div class="npc-stage">
+            <div id="portrait" class="portrait-frame" aria-label="候检者画像"></div>
+            <div class="npc-shadow"></div>
+          </div>
+          <div class="speaker-panel">
+            <div class="speaker-dot"></div>
+            <p id="npcSpeech">“下一位。”</p>
+          </div>
+        </div>
+
+        <div class="dossier-head">
+          <div>
+            <span class="case-id" id="caseId">CASE --</span>
+            <h2 id="npcName">等待候检者</h2>
+            <div class="identity-tags" id="identityTags"></div>
+          </div>
+          <div class="risk-stamp" id="riskStamp">未审</div>
+        </div>
+
+        <div class="dossier-grid">
+          <article class="paper-card identity-card">
+            <div class="paper-topline">
+              <span>入城通行证</span>
+              <span id="docStatus" class="doc-status">待核</span>
+            </div>
+            <div class="permit-layout">
+              <div id="miniPortrait" class="mini-portrait"></div>
+              <dl id="permitFields" class="permit-fields"></dl>
+            </div>
+            <div class="permit-footer">
+              <span id="serialCode">BG-000000</span>
+              <span id="sealMark" class="seal-mark">第七门</span>
+            </div>
+          </article>
+
+          <article class="paper-card statement-card">
+            <div class="paper-topline">
+              <span>口供记录</span>
+              <span class="paperclip">⌁</span>
+            </div>
+            <div id="statements" class="statement-list"></div>
+          </article>
+
+          <article class="paper-card items-card">
+            <div class="paper-topline">
+              <span>携带物申报</span>
+              <span id="itemCount" class="muted"></span>
+            </div>
+            <div id="itemsList" class="items-list"></div>
+            <div id="searchReveal" class="search-reveal hidden"></div>
+          </article>
+
+          <article class="paper-card record-card">
+            <div class="paper-topline">
+              <span>过往记录</span>
+              <span class="archive-stamp">ARCHIVE</span>
+            </div>
+            <div id="recordsList" class="records-list"></div>
+          </article>
+
+          <article class="paper-card relation-card">
+            <div class="paper-topline">
+              <span>同行 / 关系网</span>
+              <span class="muted">关联档案</span>
+            </div>
+            <div id="relationsList" class="relations-list"></div>
+          </article>
+
+          <article class="paper-card notes-card">
+            <div class="paper-topline">
+              <span>审查员便笺</span>
+              <span class="muted">自动归纳</span>
+            </div>
+            <div id="clueBoard" class="clue-board"></div>
+          </article>
+        </div>
+      </section>
+
+      <aside class="right-rail">
+        <section class="panel inspector-panel">
+          <span class="panel-kicker">FIELD GUIDE</span>
+          <h2>审查手册</h2>
+          <div id="rulebook" class="rulebook"></div>
+          <button class="ghost-btn rules-rail-btn" data-open-rules aria-haspopup="dialog" aria-controls="helpOverlay">查看完整游戏规则</button>
+        </section>
+
+        <section class="panel city-panel">
+          <div class="panel-title-row">
+            <h2>地下城动态</h2>
+            <span class="live-dot">LIVE</span>
+          </div>
+          <div id="newsFeed" class="news-feed"></div>
+        </section>
+
+        <section class="panel quota-panel">
+          <h2>今日指标</h2>
+          <div class="quota-row"><span>已处理</span><b id="processedQuota">0</b></div>
+          <div class="quota-row"><span>平均审查压力</span><b id="pressureText">稳定</b></div>
+          <div class="quota-row"><span>待结算事件</span><b id="pendingEvents">0</b></div>
+        </section>
+      </aside>
+    </section>
+
+    <footer class="action-dock">
+      <div class="action-hint">
+        <span class="keys">1</span><span class="keys">2</span><span class="keys">3</span><span class="keys">4</span>
+        <p id="actionHint">根据证件、口供、携带物、记录和关系做出判断。搜查不会结束案件。</p>
+      </div>
+      <div class="action-buttons">
+        <button class="action-btn allow" id="allowBtn" data-action="allow">
+          <span class="action-icon">✓</span>
+          <span><b>放行</b><small>允许进入地下城</small></span>
+        </button>
+        <button class="action-btn reject" id="rejectBtn" data-action="reject">
+          <span class="action-icon">×</span>
+          <span><b>拒绝</b><small>遣返至城门外</small></span>
+        </button>
+        <button class="action-btn search" id="searchBtn" data-action="search">
+          <span class="action-icon">⌕</span>
+          <span><b>搜查</b><small>消耗 1 份搜查令</small></span>
+        </button>
+        <button class="action-btn isolate" id="isolateBtn" data-action="isolate">
+          <span class="action-icon">▣</span>
+          <span><b>隔离</b><small>占用 1 个隔离位</small></span>
+        </button>
+      </div>
+    </footer>
+  </main>
+
+  <div class="overlay active" id="startOverlay">
+    <div class="start-card">
+      <div class="crest">
+        <span>VII</span>
+      </div>
+      <span class="eyebrow">BLACKGATE MUNICIPAL SERVICE</span>
+      <h2>地下城安全审查员</h2>
+      <p class="lead">
+        你只有有限的信息与资源。太严格，商路断裂、民意崩塌；太宽松，怪物、疫病与间谍会从你盖下的每一个印章里钻进城。
+      </p>
+
+      <div class="briefing-grid">
+        <div><b>看</b><span>证件 · 口供 · 携带物 · 记录 · 关系</span></div>
+        <div><b>判</b><span>放行 · 拒绝 · 搜查 · 隔离</span></div>
+        <div><b>扛</b><span>经济 · 治安 · 民意 · 渗透风险</span></div>
+      </div>
+
+      <section class="quickstart-note" aria-label="30秒上手">
+        <strong>第一次玩？30秒上手</strong>
+        <p>每天先读左侧审查令，再核对来访者的材料。拿不准时可以搜查；最后选择放行、拒绝或隔离。处理完当天所有人，查看报告，再进入下一天。</p>
+        <small>目标：撑过14天，让城邦保持运转。没有阅读倒计时；搜查不会结束案件，别忘了作最终决定。</small>
+      </section>
+
+      <div class="difficulty-select">
+        <button data-difficulty="easy">
+          <b>见习审查员</b>
+          <small>风险更低 · 资源更多</small>
+        </button>
+        <button class="selected" data-difficulty="normal">
+          <b>黑门值勤官</b>
+          <small>推荐 · 真假线索混杂</small>
+        </button>
+        <button data-difficulty="hard">
+          <b>深层封锁线</b>
+          <small>危险更多 · 惩罚更重</small>
+        </button>
+      </div>
+
+      <div class="start-actions">
+        <button id="startRulesBtn" class="ghost-btn" data-open-rules aria-haspopup="dialog" aria-controls="helpOverlay">第一次玩 · 先看规则</button>
+        <button id="continueBtn" class="ghost-btn hidden">继续上次值勤</button>
+        <button id="startBtn" class="primary-btn">签署任命书 · 开始值勤</button>
+      </div>
+      <p class="tiny-note">纯本地运行 · 无联网依赖 · 自动保存进度</p>
+    </div>
+  </div>
+
+  <div class="overlay" id="dayOverlay">
+    <div class="report-card">
+      <span class="eyebrow">END OF SHIFT REPORT</span>
+      <h2 id="reportTitle">第 1 天值勤报告</h2>
+      <div class="report-stats" id="reportStats"></div>
+      <div class="audit-columns">
+        <div>
+          <h3>延迟事件</h3>
+          <div id="eventReport" class="event-report"></div>
+        </div>
+        <div>
+          <h3>抽样复核</h3>
+          <div id="auditReport" class="audit-report"></div>
+        </div>
+      </div>
+      <div class="report-footer">
+        <p id="reportComment"></p>
+        <button id="nextDayBtn" class="primary-btn">领取次日审查令</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="helpOverlay">
+    <div class="help-card rules-manual" role="dialog" aria-modal="true" aria-labelledby="rulesTitle" aria-describedby="rulesSubtitle">
+      <header class="rules-header">
+        <button class="close-btn" id="closeHelpBtn" aria-label="关闭规则说明" title="关闭（Esc）">×</button>
+        <span class="eyebrow">BLACKGATE · INSPECTOR'S MANUAL</span>
+        <h2 id="rulesTitle">游戏规则 · 从这里开始</h2>
+        <p id="rulesSubtitle">先看目标、流程和四个按钮，就能开始值勤。下面的详细规则可按需展开。</p>
+      </header>
+
+      <div class="rules-scroll" tabindex="0" aria-label="可滚动的规则正文">
+        <section class="rules-section rules-goal">
+          <h3>你的目标：撑过14天，别让城邦崩溃</h3>
+          <p>你是地下城的门口审查员。让正常旅客进城，拦住违法者，把可能传播疫病、失控诅咒或伪装成旅客的怪物移交隔离。<strong>不是越严格越好，也不是放得越多越好。</strong></p>
+        </section>
+        <p class="rules-calm"><strong>可以慢慢看。</strong>本游戏没有阅读倒计时。打开规则、查看材料都不消耗搜查令或隔离位，只有执行操作才会推进审查。</p>
+
+        <nav class="rules-nav" aria-label="规则目录">
+          <button data-rules-jump="rulesFlow">一天怎么玩</button>
+          <button data-rules-jump="rulesActions">四种操作</button>
+          <button data-rules-jump="rulesResources">资源怎么看</button>
+          <button data-rules-jump="rulesEvidence">材料怎么读</button>
+          <button data-rules-jump="rulesEnding">胜负与日结</button>
+          <button data-rules-jump="rulesBasics">存档与按键</button>
+        </nav>
+
+        <section class="rules-section" id="rulesFlow">
+          <h3>01 · 一天怎么玩</h3>
+          <ol class="rules-flow">
+            <li><strong>先读今日审查令</strong>看左侧当天要求。有时疫病更多，有时贸易更重要；每日配额与错误处置代价也可能变化。</li>
+            <li><strong>交叉核对材料</strong>看中间的证件、口供、申报物、过往记录和同行关系。右侧手册、审查员便笺帮助你发现疑点。</li>
+            <li><strong>决定要不要搜查，再处置</strong>有疑点且还有搜查令时，可以补充搜查。之后仍需选择放行、拒绝或隔离，才会轮到下一人。</li>
+            <li><strong>读完日结，再领次日审查令</strong>当天队列清空后自动结算。查看后续事件与复核反馈，再点“领取次日审查令”。</li>
+          </ol>
+        </section>
+
+        <section class="rules-section" id="rulesActions">
+          <h3>02 · 底部四个按钮，有什么区别？</h3>
+          <div class="rules-action-grid">
+            <article class="rules-action allow">
+              <h4><kbd class="rules-key">1</kbd> 放行：让他进城</h4>
+              <p>适用于材料可信、没有足够危险证据的正常旅客。正确放行有助于城库、经济与民意；放进危险目标会损害治安并提高渗透风险。</p>
+              <p class="rules-cost">最终决定 · 结束本案，进入下一人。</p>
+            </article>
+            <article class="rules-action reject">
+              <h4><kbd class="rules-key">2</kbd> 拒绝：不让他入城</h4>
+              <p>用于伪证、走私、通缉、间谍等不宜入城的目标。误拒正常旅客会伤害经济与民意。对疫病、怪物等高危对象，单纯赶走仍可能留下后患。</p>
+              <p class="rules-cost">最终决定 · 不占隔离位，但不等于没有代价。</p>
+            </article>
+            <article class="rules-action search">
+              <h4><kbd class="rules-key">3</kbd> 搜查：先多查一点</h4>
+              <p>追加检查隐藏物、体征与魔素等信息。结果出现在“携带物申报”下方。<strong>一个人最多搜查一次；搜查不等于放行，也不会进入下一人。</strong></p>
+              <p class="rules-cost">消耗1份搜查令、1G城库，并增加审查压力。</p>
+            </article>
+            <article class="rules-action isolate">
+              <h4><kbd class="rules-key">4</kbd> 隔离：移交封存检查</h4>
+              <p>用于疑似伪装怪物、疫病或失控诅咒等高危目标。不要把隔离当成万能保险：错误隔离普通人会严重伤害民意，也会占掉稀缺名额。</p>
+              <p class="rules-cost">最终决定 · 消耗1个隔离位，并产生处置成本。</p>
+            </article>
+          </div>
+          <p class="rules-warning"><strong>盖章后不能撤销。</strong>正常操作中不能回头改判；有疑问要在放行、拒绝或隔离之前搜查。按钮变灰通常表示配额用完，或当前对象已经搜查过。</p>
+        </section>
+
+        <details class="rules-details" id="rulesResources">
+          <summary>03 · 顶部数值、搜查令和隔离位怎么看？</summary>
+          <div class="rules-detail-body">
+            <div class="rules-table-wrap">
+              <table class="rules-table">
+                <caption>大方向：治安、经济、民意越高越好；渗透警戒越低越好。</caption>
+                <thead><tr><th scope="col">指标</th><th scope="col">它代表什么</th><th scope="col">需要注意</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">城库</th><td>城邦的钱，用G表示。搜查、处置与事件都会影响收支。</td><td>允许短暂欠款；日终到−30G或更低会失败。</td></tr>
+                  <tr><th scope="row">治安</th><td>城防与公共安全。放入危险者会降低它，正确拦截有助恢复。</td><td>范围0—100，日终为0会失败。</td></tr>
+                  <tr><th scope="row">经济</th><td>商路与城内生活是否正常运转。大量误拒会让贸易停摆。</td><td>范围0—100，日终为0会失败。</td></tr>
+                  <tr><th scope="row">民意</th><td>城民对审查制度的信任。误拒、尤其误隔离会消耗信任。</td><td>范围0—100，日终为0会失败。</td></tr>
+                  <tr><th scope="row">渗透警戒</th><td>危险渗入城内的累积风险，不是你的侦查能力。</td><td>越低越好；“危急”不等于已经输，日终达到100才会因此失败。</td></tr>
+                  <tr><th scope="row">搜查令</th><td>当天还能追加搜查多少人。</td><td>每日重新发放；剩余数量不会累计到明天。</td></tr>
+                  <tr><th scope="row">隔离位</th><td>当天还能隔离多少人，处置一人消耗一格。</td><td>当天不会返还，次日按配额恢复；用完便不能再隔离。</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>配额以顶部显示为准。</strong>难度决定基础数量，今日审查令可能增加或减少搜查令与隔离位。正确使用资源，比把资源一口气用光更重要。</p>
+            <p><strong>“平均审查压力”不是倒计时。</strong>它是当前版本的工作量提示，会随处置、搜查而增加，每天重置；读材料慢不会增加它，它本身也不是失败条件。</p>
+          </div>
+        </details>
+
+        <details class="rules-details" id="rulesEvidence">
+          <summary>04 · 面对一堆材料，应该从哪里看起？</summary>
+          <div class="rules-detail-body">
+            <ol>
+              <li><strong>先对身份与目的。</strong>把通行证上的姓名、用途、有效期，与口供中的说法放在一起看。</li>
+              <li><strong>再看是否互相矛盾。</strong>申报物、行程、记录、关系人能否相互解释？单条奇怪信息和多条独立冲突不是一回事。</li>
+              <li><strong>需要补证时搜查。</strong>阅读新出现的“搜查结果”，再判断是否有违法证据，还是必须封存的生物或魔法危险。</li>
+              <li><strong>最后结合当天要求处置。</strong>今日审查令会改变风险与代价，但不是当前旅客的身份答案。</li>
+            </ol>
+            <p><strong>不要只按红绿颜色盖章。</strong>“表面有效”“未审”“已搜查”、关系红点和便笺都是提示，不是好人或坏人的最终判定。没有明显矛盾，也不能证明绝对安全。</p>
+            <p>证件过期、格式特殊、带工具、认识嫌疑人，都不一定说明本人有罪；反过来，干净证件也不能排除危险。<strong>职业、种族和长相不是判决依据。</strong></p>
+            <p>信息是有限的，并非每个案件都能在搜查前百分之百分辨。日结发现误判时，用复核反馈调整下一天的判断，不必把每条模糊线索都当成铁证。</p>
+          </div>
+        </details>
+
+        <details class="rules-details" id="rulesEnding">
+          <summary>05 · 什么情况会赢、会输？日结报告有什么用？</summary>
+          <div class="rules-detail-body">
+            <p><strong>完成任期：</strong>结束第14天，并且城邦没有触发下面任意一项崩溃条件。任期结束会给出综合评分和称号。</p>
+            <ul>
+              <li>治安、经济、民意中的任意一项降到0。</li>
+              <li>渗透警戒达到100。</li>
+              <li>城库降到−30G或更低。</li>
+            </ul>
+            <p class="rules-warning"><strong>失败在日终结算时检查。</strong>最后一名旅客处理完后，先结算当天后续事件，再判断是否结束任期。所以落下一枚章时看似安全，不代表日结也一定安全。</p>
+            <p><strong>日结看三件事：</strong>城市数值怎么变了；延迟事件发生了什么；抽样复核中的真实身份、你的处置与建议处置是否一致。待结算事件可能是好消息，也可能是事故，不是“错误次数”。</p>
+            <p>屏幕最多展示8条延迟事件和4个复核案件，不代表当天只结算了这些。报告里的准确率反映当天全部最终处置；<strong>准确率不是最终综合分，也不是单独的胜负条件。</strong></p>
+            <p><strong>综合评分：</strong>治安、经济、民意、（100−渗透警戒）四项取平均后四舍五入。城库不直接加分，但破产仍会结束任期。</p>
+          </div>
+        </details>
+
+        <details class="rules-details" id="rulesDifficulty">
+          <summary>06 · 三种难度差在哪？新手先选哪一个？</summary>
+          <div class="rules-detail-body">
+            <p>第一次玩可以先选<strong>见习审查员</strong>，熟悉流程后再挑战默认的<strong>黑门值勤官</strong>。</p>
+            <div class="rules-table-wrap">
+              <table class="rules-table">
+                <caption>以下为基础配额；当日审查令可能进一步调整。</caption>
+                <thead><tr><th scope="col">难度</th><th scope="col">首日人数</th><th scope="col">搜查令 / 日</th><th scope="col">隔离位 / 日</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">见习审查员</th><td>10人</td><td>5份</td><td>4格</td></tr>
+                  <tr><th scope="row">黑门值勤官</th><td>12人</td><td>4份</td><td>3格</td></tr>
+                  <tr><th scope="row">深层封锁线</th><td>14人</td><td>3份</td><td>2格</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>越难的模式，危险目标比例更高、错误处置的数值惩罚更重、配额更少。第5、9、13天人数各增加1人，每天最多16人；后期整体风险也会上升。</p>
+            <p>难度在开始新任期前选择，不能在当前任期中途切换。阅读规则不影响已选难度。</p>
+          </div>
+        </details>
+
+        <details class="rules-details" id="rulesExamples">
+          <summary>07 · 三个例子：怎样避免最常见的误解？</summary>
+          <div class="rules-detail-body">
+            <p>以下只是帮助理解操作的假想情形，不是当前旅客的答案。</p>
+            <div class="rules-examples">
+              <article class="rules-example"><h4>商人带着一把工具刀</h4><p>工具本身不是违法证据。先看用途、职业和其他材料是否能互相解释，不要仅凭“带了刀”就隔离。</p></article>
+              <article class="rules-example"><h4>口供与证件有冲突，你点了搜查</h4><p>先读新增结果，再决定放行、拒绝或隔离。搜查只是补充信息，不会自动帮你完成判断。</p></article>
+              <article class="rules-example"><h4>搜查出现异常体征与疫病迹象</h4><p>这和普通证件问题不同，需要考虑隔离处置。只把高危目标赶出城，可能没有真正消除危险。</p></article>
+            </div>
+            <p><strong>记住一句话：</strong>正常旅客要能进来，违法者要挡在外面，高危目标要妥善隔离。</p>
+          </div>
+        </details>
+
+        <details class="rules-details" id="rulesBasics">
+          <summary>08 · 自动保存、重开、音乐和快捷键</summary>
+          <div class="rules-detail-body">
+            <p><strong>保存与继续：</strong>游戏会在搜查后、案件切换后和日结等节点自动保存到当前浏览器。重新打开时，用“继续上次值勤”恢复；尽量等到下一位或报告出现后再关闭页面。</p>
+            <p>存档不上传云端，换浏览器、换设备、使用无痕窗口或清理浏览器数据，可能无法找到原进度。同一浏览器环境只保留一份本地任期存档。</p>
+            <p><strong>重新开始：</strong>右上角“↻”会先要求确认；确认后清除旧存档。任命书上的“开始值勤”会建立新任期并覆盖原存档，已有进度时请选“继续上次值勤”。</p>
+            <p><strong>快捷键：</strong><kbd class="rules-key">1</kbd>放行，<kbd class="rules-key">2</kbd>拒绝，<kbd class="rules-key">3</kbd>搜查，<kbd class="rules-key">4</kbd>隔离。规则面板、任命书或日结报告打开时，这些数字键不会执行审查。</p>
+            <p><strong>规则面板：</strong>开场页“先看规则”、右上角“规则说明”、右侧“查看完整游戏规则”都能打开。按Esc、点击右上角×、底部返回按钮或面板外的暗色区域可关闭；关闭后回到原来的场景。</p>
+            <p><strong>音乐：</strong>点击右上角“♫”切换环境音乐与音效，不影响游戏判断。</p>
+          </div>
+        </details>
+      </div>
+      <footer class="rules-footer">
+        <small>规则随时可重看 · 阅读不消耗资源<br>按 Esc 关闭，不会重开或改动本案</small>
+        <button class="primary-btn" data-close-rules>明白了 · 返回</button>
+      </footer>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./data.js"></script>
+  <script src="./game.js"></script>
+  <script src="./rules.js"></script>
+</body>
+</html>
