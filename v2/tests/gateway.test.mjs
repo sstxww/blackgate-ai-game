@@ -109,3 +109,79 @@ test('gateway rejects private/IP targets and upstream redirects',async()=>{
     globalThis.fetch=originalFetch;
   }
 });
+
+
+test('relay client falls back to public gateway only during model discovery',async()=>{
+  const seen=[];
+  const fakeFetch=async(url,init)=>{
+    seen.push({url:String(url),headers:new Headers(init.headers),method:init.method});
+    if(String(url).startsWith('https://provider.example/'))throw new TypeError('Failed to fetch');
+    return new Response(JSON.stringify({data:[{id:'deepseek-v4'}]}),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+  const client=new RelayClient({
+    url:'https://provider.example/v1',
+    key:'sk-public-fallback-test',
+    publicGateway:'https://public-gateway.example/api/gateway',
+    fetchImpl:fakeFetch
+  });
+  const ids=await client.models();
+  assert.deepEqual(ids,['deepseek-v4']);
+  assert.equal(seen.length,2);
+  assert.equal(seen[0].url,'https://provider.example/v1/models');
+  assert.equal(seen[1].url,'https://public-gateway.example/api/gateway');
+  assert.equal(seen[1].headers.get('x-blackgate-target'),'https://provider.example/v1');
+  assert.equal(seen[1].headers.get('x-blackgate-path'),'/models');
+  assert.equal(client.transport,'public-gateway');
+});
+
+test('gateway is not a general-purpose open proxy',async()=>{
+  const req=new Request('https://gateway.example/relay',{
+    method:'GET',
+    headers:{
+      Origin:'https://sstxww.github.io',
+      'X-Blackgate-Target':'https://provider.example/v1',
+      'X-Blackgate-Path':'/admin/users'
+    }
+  });
+  const res=await gateway.fetch(req,{});
+  assert.equal(res.status,400);
+  const body=await res.json();
+  assert.match(body.error.message,/模型 API 路径/);
+});
+
+test('Vercel adapter exposes the same stateless gateway contract',async()=>{
+  const {default:handler}=await import('../../api/gateway.mjs');
+  const originalFetch=globalThis.fetch;
+  let seen;
+  globalThis.fetch=async(url,init)=>{
+    seen={url:String(url),headers:new Headers(init.headers),method:init.method};
+    return new Response(JSON.stringify({data:[{id:'model-a'}]}),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+  try{
+    const req={
+      method:'GET',
+      url:'/api/gateway',
+      headers:{
+        host:'blackgate.example',
+        origin:'https://sstxww.github.io',
+        authorization:'Bearer adapter-test',
+        'x-blackgate-target':'https://provider.example/v1',
+        'x-blackgate-path':'/models',
+        'x-forwarded-proto':'https'
+      }
+    };
+    const output={headers:{}};
+    const res={
+      statusCode:0,
+      setHeader(name,value){output.headers[String(name).toLowerCase()]=String(value);},
+      end(body){output.body=Buffer.isBuffer(body)?body.toString('utf8'):String(body||'');}
+    };
+    await handler(req,res);
+    assert.equal(res.statusCode,200);
+    assert.equal(seen.url,'https://provider.example/v1/models');
+    assert.equal(output.headers['access-control-allow-origin'],'https://sstxww.github.io');
+    assert.deepEqual(JSON.parse(output.body),{data:[{id:'model-a'}]});
+  }finally{
+    globalThis.fetch=originalFetch;
+  }
+});
