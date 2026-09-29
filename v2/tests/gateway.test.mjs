@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import gateway from '../../gateway/worker.mjs';
-import {RelayClient} from '../../relay-client.mjs';
+import {RelayClient,normalizeApiKey} from '../../relay-client.mjs';
 
 test('gateway answers browser preflight without provider auth',async()=>{
   const req=new Request('https://gateway.example/',{
@@ -9,13 +9,13 @@ test('gateway answers browser preflight without provider auth',async()=>{
     headers:{
       Origin:'https://sstxww.github.io',
       'Access-Control-Request-Method':'POST',
-      'Access-Control-Request-Headers':'authorization,content-type,x-blackgate-target,x-blackgate-path'
+      'Access-Control-Request-Headers':'x-blackgate-key,x-blackgate-auth,content-type,x-blackgate-target,x-blackgate-path'
     }
   });
   const res=await gateway.fetch(req,{});
   assert.equal(res.status,204);
   assert.equal(res.headers.get('access-control-allow-origin'),'https://sstxww.github.io');
-  assert.match(res.headers.get('access-control-allow-headers'),/Authorization/i);
+  assert.match(res.headers.get('access-control-allow-headers'),/X-Blackgate-Key/i);
   assert.match(res.headers.get('access-control-allow-headers'),/X-Blackgate-Target/i);
 });
 
@@ -37,11 +37,13 @@ test('relay client sends provider target and path to explicit gateway',async()=>
   assert.equal(seen.method,'GET');
   assert.equal(seen.headers.get('x-blackgate-target'),'https://provider.example/v1');
   assert.equal(seen.headers.get('x-blackgate-path'),'/models');
-  assert.equal(seen.headers.get('authorization'),'Bearer sk-test-only-not-real');
+  assert.equal(seen.headers.get('authorization'),null);
+  assert.equal(seen.headers.get('x-blackgate-key'),'sk-test-only-not-real');
+  assert.equal(seen.headers.get('x-blackgate-auth'),'bearer');
   assert.equal(client.transport,'gateway');
 });
 
-test('gateway forwards only approved headers and preserves provider response',async()=>{
+test('gateway rebuilds provider auth from Blackgate key headers and preserves response',async()=>{
   const originalFetch=globalThis.fetch;
   let seen;
   globalThis.fetch=async(url,init)=>{
@@ -57,7 +59,8 @@ test('gateway forwards only approved headers and preserves provider response',as
       headers:{
         Origin:'https://sstxww.github.io',
         'Content-Type':'application/json',
-        Authorization:'Bearer test-secret',
+        'X-Blackgate-Key':'  Bearer  sk-test-secret\u200b  ',
+        'X-Blackgate-Auth':'bearer',
         Cookie:'must-not-forward=1',
         'X-Blackgate-Target':'https://provider.example/v1',
         'X-Blackgate-Path':'/chat/completions'
@@ -67,7 +70,8 @@ test('gateway forwards only approved headers and preserves provider response',as
     const res=await gateway.fetch(req,{});
     assert.equal(res.status,200);
     assert.equal(seen.url,'https://provider.example/v1/chat/completions');
-    assert.equal(seen.headers.get('authorization'),'Bearer test-secret');
+    assert.equal(seen.headers.get('authorization'),'Bearer sk-test-secret');
+    assert.equal(seen.headers.get('x-blackgate-key'),null);
     assert.equal(seen.headers.get('cookie'),null);
     assert.equal(seen.headers.get('x-blackgate-target'),null);
     assert.equal(res.headers.get('set-cookie'),null);
@@ -168,4 +172,42 @@ test('gateway is not a general-purpose open proxy',async()=>{
   assert.equal(res.status,400);
   const body=await res.json();
   assert.match(body.error.message,/模型 API 路径/);
+});
+
+
+test('API key normalization removes common clipboard artifacts',()=>{
+  assert.equal(normalizeApiKey('  Bearer  sk-abc-123  '),'sk-abc-123');
+  assert.equal(normalizeApiKey('“sk-abc-123”'),'sk-abc-123');
+  assert.equal(normalizeApiKey('sk-abc\u200b-123'),'sk-abc-123');
+  assert.equal(normalizeApiKey('ｓｋ－ａｂｃ－１２３'),'sk-abc-123');
+});
+
+test('gateway rebuilds Anthropic and Gemini auth without forwarding Blackgate key',async()=>{
+  const originalFetch=globalThis.fetch;
+  const seen=[];
+  globalThis.fetch=async(url,init)=>{
+    seen.push(new Headers(init.headers));
+    return new Response(JSON.stringify({data:[{id:'x'}]}),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+  try{
+    for(const [scheme,header] of [['anthropic','x-api-key'],['gemini','x-goog-api-key']]){
+      const req=new Request('https://gateway.example/relay',{
+        method:'GET',
+        headers:{
+          Origin:'https://sstxww.github.io',
+          'X-Blackgate-Key':'key-123',
+          'X-Blackgate-Auth':scheme,
+          'X-Blackgate-Target':'https://provider.example/v1',
+          'X-Blackgate-Path':'/models'
+        }
+      });
+      const res=await gateway.fetch(req,{});
+      assert.equal(res.status,200);
+      const h=seen.at(-1);
+      assert.equal(h.get(header),'key-123');
+      assert.equal(h.get('x-blackgate-key'),null);
+    }
+  }finally{
+    globalThis.fetch=originalFetch;
+  }
 });
