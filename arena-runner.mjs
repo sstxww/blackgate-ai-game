@@ -9,7 +9,7 @@ let running=false,paused=false,mode='human',requests=0,total=0,actions=0,logs=[]
 const safe=x=>{const s=typeof x==='string'?x:JSON.stringify(x);return client?client.sanitize(s):s.replace(/\b(?:sk-[\w-]{8,}|apikey_[\w-]{8,}|AIza[\w-]{20,})\b/g,'[REDACTED]');};
 function note(message){$('runnerNote').textContent=safe(message);}
 function identity(){return {username:$('username').value.trim()||'Anonymous',model:$('manualModel').value.trim()||$('modelSelect').value,effort:$('effort').value};}
-function createClient(){return new RelayClient({url:$('apiUrl').value,key:$('apiKey').value,protocol:$('protocol').value});}
+function createClient(){return new RelayClient({url:$('apiUrl').value,key:$('apiKey').value,protocol:$('protocol').value,gateway:$('gatewayUrl')?.value||''});}
 function log(entry){
   const clean=JSON.parse(safe({time:new Date().toISOString(),...entry}));logs.push(clean);
   const box=$('logRows');box.replaceChildren();
@@ -59,7 +59,7 @@ async function fetchModels(){
   try{
     client?.clear();client=createClient();const fetched=await client.models(modelsAbort.signal);
     modelList=fetched.filter(id=>safe(id)===id);$('manualModel').value='';renderModels();
-    $('connectionStatus').textContent=`已获取 ${modelList.length} 个模型 · ${client.protocol} · 密钥只在当前页面内存`;
+    $('connectionStatus').textContent=`已获取 ${modelList.length} 个模型 · ${client.protocol} · ${client.transport==='gateway'?'兼容网关':'浏览器直连'} · 密钥只在当前页面内存`;
   }catch(e){if(e.name!=='AbortError'){$('connectionStatus').textContent=safe(e.message);$('connectionHelp').open=true;}modelList=[];renderModels();}
   finally{$('fetchModels').disabled=false;}
 }
@@ -115,7 +115,7 @@ async function loop(id){
       const after=await game.step(fields);actions++;recallCount=0;archive=null;
       memories.push({day:before.day,case_id:before.case?.id,action:fields.action,reason:fields.reason,resources_after:after.resources});if(memories.length>16)memories.shift();
       log({type:'decision',day:before.day,case_id:before.case?.id,revision_before:before.revision,revision_after:after.revision,...fields,latency_ms:response.latency,usage:response.usage,protocol:response.protocol,effort_status:response.effortStatus,resources_before:before.resources,resources_after:after.resources});
-      $('effortStatus').textContent=`推理：${meta.effort} · ${response.protocol} · ${meta.effort==='auto'?'服务商默认':'已发送参数，服务商未独立证明执行档位'}`;
+      $('effortStatus').textContent=`推理：${meta.effort} · ${response.protocol} · ${response.transport==='gateway'?'兼容网关':'直连'} · ${meta.effort==='auto'?'服务商默认':'已发送参数，服务商未独立证明执行档位'}`;
       controls();if(after.finished){complete();return;}await sleep(180);
     }catch(e){
       if(epoch!==id||!running||e.name==='AbortError')return;
@@ -157,7 +157,7 @@ $('startAI').onclick=startAI;$('stopAI').onclick=stop;
 $('pauseAI').onclick=()=>{if(!running)return;paused=!paused;$('runState').textContent=paused?'已暂停 · 当前响应保留，不落子':'继续自主判断';note(paused?'不会发起新请求；已经发出的响应会暂存，继续后再执行。':'从当前世界状态继续，不重开本局。');controls();};
 $('clearKey').onclick=()=>{stop();modelsAbort?.abort();client?.clear();client=null;$('apiKey').value='';$('connectionStatus').textContent='密钥已从当前页面清除。';};
 $('modelSearch').oninput=renderModels;$('modelSelect').onchange=()=>{$('manualModel').value='';};
-for(const id of ['apiUrl','apiKey','protocol'])$(id).addEventListener('change',()=>{if(running)return;modelList=[];renderModels();$('connectionStatus').textContent='连接信息已修改，请重新获取模型。';});
+for(const id of ['apiUrl','apiKey','protocol','gatewayUrl'])$(id).addEventListener('change',()=>{if(running)return;modelList=[];renderModels();$('connectionStatus').textContent='连接信息已修改，请重新获取模型。';});
 $('exportLog').onclick=exportLog;$('shareScore').onclick=()=>{const r=game.report();if(r)shareScore(r);};
 $('boardType').onchange=renderBoard;$('boardScope').onchange=renderBoard;
 $('soundToggle').onclick=()=>{sound.start();sound.setEnabled(!sound.enabled);if(!sound.enabled)sound.ctx?.suspend().catch(()=>{});else sound.ctx?.resume().catch(()=>{});$('soundToggle').textContent=sound.enabled?'♫ 音乐已开启':'♫ 开启音乐';$('soundToggle').setAttribute('aria-pressed',String(sound.enabled));};
