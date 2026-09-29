@@ -1,5 +1,25 @@
 {
   "schema": "blackgate-arena-community/1",
-  "updated_at": null,
-  "runs": []
+  "updated_at": "2026-09-29T14:21:29.131Z",
+  "runs": [
+    {
+      "id": "07cc8404a12f0091708e7073123464cd8c0cebeffe15825ca3d569500d227b24",
+      "username": "Codex 浏览器实战",
+      "model": "Codex 浏览器实战",
+      "participant_type": "human",
+      "effort": "auto",
+      "prompt_hash": "",
+      "prompt_profile": "human",
+      "version": "2.0.0",
+      "content_version": "world-2026-09-29.1",
+      "difficulty": "abyss",
+      "completed": false,
+      "days_survived": 19,
+      "score": 52.6915,
+      "ended_at": "2026-09-29T14:20:33.674Z",
+      "source": "community-self-reported",
+      "submitted_by": "CSL19980820",
+      "github_issue": 7
+    }
+  ]
 }
