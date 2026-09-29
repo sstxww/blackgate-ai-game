@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a game, Chat Relay, or API problem
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Original game, Chat Relay, JSON API, Documentation, GitHub Pages, Benchmark]
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the smallest reproduction you can.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser / runtime
+  - type: textarea
+    id: extra
+    attributes:
+      label: Extra context

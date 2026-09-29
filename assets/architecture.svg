@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="330" viewBox="0 0 1200 330">
+  <rect width="1200" height="330" rx="24" fill="#11110f"/>
+  <style>.t{font:700 22px Arial;fill:#eee8db}.s{font:16px Arial;fill:#aaa28f}.b{fill:#1f1d18;stroke:#514a3d;stroke-width:2}.a{fill:none;stroke:#b69658;stroke-width:3;marker-end:url(#m)}</style>
+  <defs><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#b69658"/></marker></defs>
+  <rect class="b" x="60" y="90" width="270" height="150" rx="18"/><text class="t" x="195" y="140" text-anchor="middle">Original Game</text><text class="s" x="195" y="176" text-anchor="middle">same rules · same UI</text><text class="s" x="195" y="202" text-anchor="middle">unchanged gameplay files</text>
+  <rect class="b" x="465" y="90" width="270" height="150" rx="18"/><text class="t" x="600" y="140" text-anchor="middle">Visible-State Adapter</text><text class="s" x="600" y="176" text-anchor="middle">DOM → safe JSON</text><text class="s" x="600" y="202" text-anchor="middle">no hidden answer fields</text>
+  <rect class="b" x="870" y="45" width="270" height="105" rx="18"/><text class="t" x="1005" y="88" text-anchor="middle">Chat Relay</text><text class="s" x="1005" y="120" text-anchor="middle">ChatGPT · Claude · Gemini</text>
+  <rect class="b" x="870" y="180" width="270" height="105" rx="18"/><text class="t" x="1005" y="223" text-anchor="middle">Agent / API</text><text class="s" x="1005" y="255" text-anchor="middle">JSON state → action</text>
+  <path class="a" d="M330 165H455"/><path class="a" d="M735 150C795 120 805 95 860 95"/><path class="a" d="M735 180C795 205 805 232 860 232"/>
+</svg>

@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest a benchmark, model adapter, UI, or evaluation improvement
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: dropdown
+    id: compatibility
+    attributes:
+      label: Does it change original gameplay semantics?
+      options: ["No", "Yes", "Unsure"]
+    validations:
+      required: true

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="520" viewBox="0 0 1440 520">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#12110e"/><stop offset="1" stop-color="#070707"/></linearGradient>
+    <radialGradient id="r" cx=".72" cy=".22" r=".7"><stop stop-color="#7d2b25" stop-opacity=".38"/><stop offset="1" stop-color="#7d2b25" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1440" height="520" rx="28" fill="url(#g)"/>
+  <rect width="1440" height="520" rx="28" fill="url(#r)"/>
+  <g opacity=".22" stroke="#b9995d">
+    <path d="M930 50v420M1040 50v420M1150 50v420M1260 50v420"/>
+    <path d="M875 120h470M875 230h470M875 340h470"/>
+  </g>
+  <g transform="translate(90 86)">
+    <rect width="84" height="84" rx="18" fill="#8f2b26" stroke="#d3b271" stroke-width="3"/>
+    <text x="42" y="57" text-anchor="middle" font-size="42" font-family="serif" fill="#f2e7ce">审</text>
+  </g>
+  <text x="90" y="230" font-size="62" font-family="Inter,Arial,sans-serif" font-weight="800" fill="#f3ede0">BLACKGATE AI GAME</text>
+  <text x="92" y="282" font-size="30" font-family="Arial,'Microsoft YaHei',sans-serif" font-weight="700" fill="#d9b875">地下城安全审查员 · 为 AI 设计的长期决策游戏</text>
+  <text x="92" y="340" font-size="23" font-family="Inter,Arial,sans-serif" fill="#b6ae9d">Incomplete information · scarce resources · delayed consequences · 14-day survival</text>
+  <g transform="translate(92 392)" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="700">
+    <rect width="180" height="48" rx="24" fill="#27241e" stroke="#4a4438"/><text x="90" y="31" text-anchor="middle" fill="#eee7d8">CHAT RELAY</text>
+    <rect x="194" width="180" height="48" rx="24" fill="#27241e" stroke="#4a4438"/><text x="284" y="31" text-anchor="middle" fill="#eee7d8">JSON API</text>
+    <rect x="388" width="180" height="48" rx="24" fill="#27241e" stroke="#4a4438"/><text x="478" y="31" text-anchor="middle" fill="#eee7d8">MODEL ARENA</text>
+  </g>
+  <g transform="translate(970 105)">
+    <rect width="310" height="310" rx="34" fill="#171713" stroke="#40392d" stroke-width="3"/>
+    <circle cx="155" cy="128" r="78" fill="#23231d" stroke="#c7a766" stroke-width="4"/>
+    <path d="M119 114q36-56 72 0v54q-36 35-72 0z" fill="#716452"/>
+    <circle cx="137" cy="130" r="6" fill="#111"/><circle cx="173" cy="130" r="6" fill="#111"/>
+    <path d="M138 164q17 12 34 0" fill="none" stroke="#2f211a" stroke-width="4"/>
+    <rect x="68" y="230" width="174" height="42" rx="9" fill="#8f2b26"/>
+    <text x="155" y="258" text-anchor="middle" font-size="18" font-family="Inter,Arial" font-weight="800" fill="#fff4e4">ALLOW / REJECT?</text>
+  </g>
+</svg>

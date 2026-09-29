@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node runner/server.mjs",
     "agent:example": "node examples/minimal-agent.mjs",
-    "check": "node --check ai/adapter.js && node --check runner/server.mjs && node --check examples/minimal-agent.mjs"
+    "check": "node --check ai/adapter.js && node --check chat.js && node --check runner/server.mjs && node --check examples/minimal-agent.mjs"
   },
   "dependencies": {
     "playwright": "^1.55.0"
