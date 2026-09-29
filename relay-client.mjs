@@ -126,7 +126,9 @@ export class RelayClient {
             clearTimeout(timer);signal?.removeEventListener('abort',abort);await delay(retry,signal);continue;
           }
           let note='';try{const d=JSON.parse(raw);note=d.error?.message||d.message||'';}catch{}
-          const baseMessage=this.sanitize(String(note)||({401:'密钥无效或已过期',403:'无模型权限或额度不足',404:'接口路径或模型不存在',429:'请求限流'}[res.status]||'接口返回错误')).slice(0,240);\n          const keyHint=res.status===401?`（已清理 Bearer/空格/隐藏字符；当前 Key 长度 ${this.#key.length}）`:'';\n          const err=Error(`HTTP ${res.status}：`+baseMessage+keyHint);
+          const baseMessage=this.sanitize(String(note)||({401:'密钥无效或已过期',403:'无模型权限或额度不足',404:'接口路径或模型不存在',429:'请求限流'}[res.status]||'接口返回错误')).slice(0,240);
+          const keyHint=res.status===401?`（已清理 Bearer/空格/隐藏字符；当前 Key 长度 ${this.#key.length}）`:'';
+          const err=Error(`HTTP ${res.status}：`+baseMessage+keyHint);
           err.status=res.status;
           if([400,422].includes(res.status)&&/reasoning|thinking|effort|budget/i.test(note))err.message+='。未偷偷降级，请选择“模型默认”或该模型支持的档位。';
           throw err;
