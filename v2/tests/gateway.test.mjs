@@ -111,27 +111,48 @@ test('gateway rejects private/IP targets and upstream redirects',async()=>{
 });
 
 
-test('relay client falls back to public gateway only during model discovery',async()=>{
+test('relay client prefers public gateway on first model discovery',async()=>{
   const seen=[];
   const fakeFetch=async(url,init)=>{
     seen.push({url:String(url),headers:new Headers(init.headers),method:init.method});
-    if(String(url).startsWith('https://provider.example/'))throw new TypeError('Failed to fetch');
     return new Response(JSON.stringify({data:[{id:'deepseek-v4'}]}),{status:200,headers:{'Content-Type':'application/json'}});
   };
   const client=new RelayClient({
     url:'https://provider.example/v1',
-    key:'sk-public-fallback-test',
+    key:'sk-public-first-test',
     publicGateway:'https://public-gateway.example/api/gateway',
+    preferPublic:true,
     fetchImpl:fakeFetch
   });
   const ids=await client.models();
   assert.deepEqual(ids,['deepseek-v4']);
-  assert.equal(seen.length,2);
-  assert.equal(seen[0].url,'https://provider.example/v1/models');
-  assert.equal(seen[1].url,'https://public-gateway.example/api/gateway');
-  assert.equal(seen[1].headers.get('x-blackgate-target'),'https://provider.example/v1');
-  assert.equal(seen[1].headers.get('x-blackgate-path'),'/models');
+  assert.equal(seen.length,1);
+  assert.equal(seen[0].url,'https://public-gateway.example/api/gateway');
+  assert.equal(seen[0].headers.get('x-blackgate-target'),'https://provider.example/v1');
+  assert.equal(seen[0].headers.get('x-blackgate-path'),'/models');
   assert.equal(client.transport,'public-gateway');
+});
+
+test('public gateway discovery may fall back to direct only if the gateway itself is unreachable',async()=>{
+  const seen=[];
+  const fakeFetch=async(url,init)=>{
+    seen.push({url:String(url),headers:new Headers(init.headers),method:init.method});
+    if(String(url).startsWith('https://public-gateway.example/'))throw new TypeError('Failed to fetch');
+    return new Response(JSON.stringify({data:[{id:'direct-model'}]}),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+  const client=new RelayClient({
+    url:'https://provider.example/v1',
+    key:'sk-public-outage-test',
+    publicGateway:'https://public-gateway.example/api/gateway',
+    preferPublic:true,
+    fetchImpl:fakeFetch
+  });
+  const ids=await client.models();
+  assert.deepEqual(ids,['direct-model']);
+  assert.equal(seen.length,2);
+  assert.equal(seen[0].url,'https://public-gateway.example/api/gateway');
+  assert.equal(seen[1].url,'https://provider.example/v1/models');
+  assert.equal(client.transport,'direct');
 });
 
 test('gateway is not a general-purpose open proxy',async()=>{
