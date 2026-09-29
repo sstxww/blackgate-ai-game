@@ -169,3 +169,33 @@ test('gateway is not a general-purpose open proxy',async()=>{
   const body=await res.json();
   assert.match(body.error.message,/模型 API 路径/);
 });
+
+
+test('gateway accepts dedicated Blackgate key transport',async()=>{
+  const originalFetch=globalThis.fetch;
+  let seen;
+  globalThis.fetch=async(url,init)=>{
+    seen={url:String(url),headers:new Headers(init.headers)};
+    return new Response(JSON.stringify({data:[{id:'ok'}]}),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+  try{
+    const req=new Request('https://gateway.example/relay',{
+      method:'GET',
+      headers:{
+        Origin:'https://sstxww.github.io',
+        'X-Blackgate-Key':'  Bearer  sk-test-secret\u200b  ',
+        'X-Blackgate-Auth':'bearer',
+        'X-Blackgate-Target':'https://provider.example/v1',
+        'X-Blackgate-Path':'/models'
+      }
+    });
+    const res=await gateway.fetch(req,{});
+    assert.equal(res.status,200);
+    assert.equal(seen.url,'https://provider.example/v1/models');
+    assert.equal(seen.headers.get('authorization'),'Bearer sk-test-secret');
+    assert.equal(seen.headers.get('x-blackgate-key'),null);
+    assert.match(res.headers.get('access-control-allow-headers'),/X-Blackgate-Key/i);
+  }finally{
+    globalThis.fetch=originalFetch;
+  }
+});
