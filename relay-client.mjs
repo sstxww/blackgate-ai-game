@@ -62,13 +62,19 @@ const delay=(ms,signal)=>new Promise((resolve,reject)=>{
   signal?.addEventListener('abort',abort,{once:true});
 });
 export class RelayClient {
-  #key; #config; #gateway; #fetch;
-  constructor({url,key,protocol='auto',gateway='',fetchImpl=globalThis.fetch}) {
-    this.#config=endpoint(url,protocol);this.#gateway=gatewayEndpoint(gateway);this.#key=String(key||'').trim();this.#fetch=fetchImpl.bind(globalThis);
+  #key; #config; #gateway; #publicGateway; #activeGateway; #gatewayType; #fetch;
+  constructor({url,key,protocol='auto',gateway='',publicGateway='',fetchImpl=globalThis.fetch}) {
+    this.#config=endpoint(url,protocol);
+    this.#gateway=gatewayEndpoint(gateway);
+    this.#publicGateway=gatewayEndpoint(publicGateway);
+    this.#activeGateway=this.#gateway;
+    this.#gatewayType=this.#gateway?'gateway':'direct';
+    this.#key=String(key||'').trim();
+    this.#fetch=fetchImpl.bind(globalThis);
     if(!this.#key && !/https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::|\/)/.test(this.#config.base)) throw Error('请输入 API Key');
   }
   get protocol(){return this.#config.protocol;}
-  get transport(){return this.#gateway?'gateway':'direct';}
+  get transport(){return this.#gatewayType;}
   clear(){this.#key='';}
   sanitize(value){
     let s=typeof value==='string'?value:JSON.stringify(value);
@@ -93,8 +99,8 @@ export class RelayClient {
         onAttempt({attempt:attempt+1,protocol});
         const headers=this.headers(protocol);if(body)headers['Content-Type']='application/json';
         let requestUrl=this.#config.base+path;
-        if(this.#gateway){
-          requestUrl=this.#gateway;
+        if(this.#activeGateway){
+          requestUrl=this.#activeGateway;
           headers['X-Blackgate-Target']=this.#config.base;
           headers['X-Blackgate-Path']=path;
         }
@@ -116,20 +122,35 @@ export class RelayClient {
       }catch(e){
         if(signal?.aborted)throw new DOMException('已停止','AbortError');
         if(timedOut)throw Error('请求超过 5 分钟，已暂停。服务商可能仍计费；本页不会自动重复这次请求。');
-        if(e instanceof TypeError)throw Error(this.#gateway?'浏览器无法连接兼容网关：请检查网关地址、HTTPS 与网关 CORS。':'浏览器无法直连该接口：通常是中转站 CORS/OPTIONS 被拦。可在“连接帮助”里填写你部署的 Blackgate 兼容网关。');
+        if(e instanceof TypeError){
+          const err=Error(this.#activeGateway?'浏览器无法连接兼容网关：请检查网关地址、HTTPS 与网关 CORS。':'浏览器无法直连该接口：通常是中转站 CORS/OPTIONS 被拦。');
+          err.code=this.#activeGateway?'GATEWAY_CONNECT_FAILED':'DIRECT_CONNECT_FAILED';
+          throw err;
+        }
         throw e;
       }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
     }
   }
   async models(signal){
-    let path='/models', all=[];
-    for(let page=0;page<5;page++){
-      const {data}=await this.request(path,{signal});all.push(...modelIds(data));
-      if(this.protocol==='gemini'&&data.nextPageToken)path='/models?pageToken='+encodeURIComponent(data.nextPageToken);
-      else if(this.protocol==='anthropic'&&data.has_more&&data.last_id)path='/models?after_id='+encodeURIComponent(data.last_id);
-      else break;
+    try{
+      let path='/models', all=[];
+      for(let page=0;page<5;page++){
+        const {data}=await this.request(path,{signal});all.push(...modelIds(data));
+        if(this.protocol==='gemini'&&data.nextPageToken)path='/models?pageToken='+encodeURIComponent(data.nextPageToken);
+        else if(this.protocol==='anthropic'&&data.has_more&&data.last_id)path='/models?after_id='+encodeURIComponent(data.last_id);
+        else break;
+      }
+      const ids=[...new Set(all)].sort();
+      if(!ids.length)throw Error('接口未返回可用模型，请展开“连接帮助”填写模型 ID。');
+      return ids;
+    }catch(e){
+      if(e?.code==='DIRECT_CONNECT_FAILED'&&this.#publicGateway&&!this.#activeGateway){
+        this.#activeGateway=this.#publicGateway;
+        this.#gatewayType='public-gateway';
+        return this.models(signal);
+      }
+      throw e;
     }
-    const ids=[...new Set(all)].sort();if(!ids.length)throw Error('接口未返回可用模型，请展开“连接帮助”填写模型 ID。');return ids;
   }
   payload(protocol,{model,effort='auto',system,user}){
     const thought=effort==='auto'?{}:{reasoning_effort:effort};
