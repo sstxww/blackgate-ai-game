@@ -27,6 +27,14 @@ export function gatewayEndpoint(raw) {
   if(u.protocol!=='https:'&&!(local&&u.protocol==='http:'))throw Error('兼容网关只支持 HTTPS；本机 localhost 可用 HTTP。');
   return u.origin+u.pathname.replace(/\/+$/,'');
 }
+export function normalizeApiKey(raw){
+  let s=String(raw??'').normalize('NFKC').trim();
+  s=s.replace(/^Bearer\s+/i,'');
+  s=s.replace(/[\u200B-\u200D\u2060\uFEFF]/g,'');
+  s=s.replace(/\s+/g,'');
+  s=s.replace(/^[\"'“”‘’]+|[\"'“”‘’]+$/g,'');
+  return s;
+}
 export function modelIds(data) {
   const list = Array.isArray(data) ? data : data?.data || data?.models || [];
   if (!Array.isArray(list)) return [];
@@ -70,7 +78,7 @@ export class RelayClient {
     this.#preferPublic=!!preferPublic;
     this.#activeGateway=this.#gateway||(this.#preferPublic?this.#publicGateway:'');
     this.#gatewayType=this.#gateway?'gateway':this.#activeGateway?'public-gateway':'direct';
-    this.#key=String(key||'').trim();
+    this.#key=normalizeApiKey(key);
     this.#fetch=fetchImpl.bind(globalThis);
     if(!this.#key && !/https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::|\/)/.test(this.#config.base)) throw Error('请输入 API Key');
   }
@@ -82,11 +90,16 @@ export class RelayClient {
     if(this.#key)for(const secret of new Set([this.#key,encodeURIComponent(this.#key)]))s=s.split(secret).join('[REDACTED]');
     return s.replace(/\b(?:sk-[\w-]{8,}|apikey_[\w-]{8,}|AIza[\w-]{20,})\b/g,'[REDACTED]');
   }
-  headers(protocol=this.protocol){
+  headers(protocol=this.protocol,forGateway=false){
     const h={Accept:'application/json'};
-    if(protocol==='anthropic'){h['anthropic-version']='2023-06-01';h['anthropic-dangerous-direct-browser-access']='true';if(this.#key)h['x-api-key']=this.#key;}
-    else if(protocol==='gemini'){if(this.#key)h['x-goog-api-key']=this.#key;}
-    else if(this.#key)h.Authorization='Bearer '+this.#key;
+    if(protocol==='anthropic'){h['anthropic-version']='2023-06-01';h['anthropic-dangerous-direct-browser-access']='true';}
+    if(!this.#key)return h;
+    if(forGateway){
+      h['X-Blackgate-Key']=this.#key;
+      h['X-Blackgate-Auth']=protocol==='anthropic'?'anthropic':protocol==='gemini'?'gemini':'bearer';
+    }else if(protocol==='anthropic')h['x-api-key']=this.#key;
+    else if(protocol==='gemini')h['x-goog-api-key']=this.#key;
+    else h.Authorization='Bearer '+this.#key;
     return h;
   }
   async request(path,{body,signal,protocol=this.protocol,onAttempt=()=>{}}={}){
@@ -98,7 +111,7 @@ export class RelayClient {
       const started=performance.now();
       try{
         onAttempt({attempt:attempt+1,protocol});
-        const headers=this.headers(protocol);if(body)headers['Content-Type']='application/json';
+        const headers=this.headers(protocol,!!this.#activeGateway);if(body)headers['Content-Type']='application/json';
         let requestUrl=this.#config.base+path;
         if(this.#activeGateway){
           requestUrl=this.#activeGateway;
@@ -113,7 +126,9 @@ export class RelayClient {
             clearTimeout(timer);signal?.removeEventListener('abort',abort);await delay(retry,signal);continue;
           }
           let note='';try{const d=JSON.parse(raw);note=d.error?.message||d.message||'';}catch{}
-          const err=Error(`HTTP ${res.status}：`+this.sanitize(String(note)||({401:'密钥无效或已过期',403:'无模型权限或额度不足',404:'接口路径或模型不存在',429:'请求限流'}[res.status]||'接口返回错误')).slice(0,240));
+          const baseMessage=this.sanitize(String(note)||({401:'密钥无效或已过期',403:'无模型权限或额度不足',404:'接口路径或模型不存在',429:'请求限流'}[res.status]||'接口返回错误')).slice(0,240);
+          const keyHint=res.status===401?`（已清理 Bearer/空格/隐藏字符；当前 Key 长度 ${this.#key.length}）`:'';
+          const err=Error(`HTTP ${res.status}：`+baseMessage+keyHint);
           err.status=res.status;
           if([400,422].includes(res.status)&&/reasoning|thinking|effort|budget/i.test(note))err.message+='。未偷偷降级，请选择“模型默认”或该模型支持的档位。';
           throw err;
