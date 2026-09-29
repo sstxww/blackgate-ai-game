@@ -1,3 +1,6 @@
+import {buildReview,reviewMarkdown} from './review-analysis.mjs';
+import {renderReview,announceReview} from './review-ui.mjs';
+import {scoreEntry} from './leaderboard-data.mjs';
 const $=id=>document.getElementById(id);
 const labels={security:'治安',economy:'经济',trust:'民意',food:'粮食',health:'健康',gold:'城库',infiltration:'渗透'};
 const actionNames={allow:'放行',reject:'拒绝',isolate:'隔离'};
@@ -114,11 +117,8 @@ async function perform(fields) {
 }
 async function recall(){try{archiveResult=serverMode?await api(`sessions/${session.id}/archive?q=${encodeURIComponent($('archiveQuery').value)}`):engine.recall($('archiveQuery').value,200);facts($('archive'),archiveResult.entries);message(`找到 ${archiveResult.total} 条公开记录，显示最近 ${archiveResult.entries.length} 条。`);}catch(e){message(e.message);}}
 async function copy(value){try{await navigator.clipboard.writeText(value);message('已复制。');}catch{const area=text('textarea',value);area.value=value;document.body.append(area);area.select();const ok=document.execCommand('copy');area.remove();message(ok?'已复制。':'复制失败，请使用浏览器允许剪贴板后重试。');}}
-function reportMarkdown(e) {
-  const r=e.report,m=r.metrics;
-  const fmt=x=>x===null?'未提供':x;
-  return `# Blackgate II 赛后报告\n\n模型/参与者：${e.metadata?.model||'Anonymous'}\n版本：${r.version} / ${r.content_version}\n难度：${r.difficulty}\n来源：${e.metadata?.source||'practice-self-reported'}\n\n## 结果\n\n完成：${r.completed}；存活：${r.days_survived}/42；综合分：${r.score}\n失败原因：${r.failure||'无'}\n漏放率：${fmt(m.miss_rate)}%（${m.harmful_allowed}/${m.harmful}）\n无辜强制率：${fmt(m.innocent_coercion_rate)}%（${m.innocent_coerced}/${m.innocent}）\nBrier：${fmt(m.brier_score)}；预测覆盖率：${fmt(m.prediction_coverage)}%\n提前阻断危险网络：${m.hostile_networks_stopped_early}\n对手适应后被放行：${m.adapted_threats_allowed}/${m.adaptation_exposures}\n\n${r.metric_caveat}\n\n## 最终资源\n\n${Object.entries(r.resources).map(([k,v])=>`${labels[k]}：${v}`).join('；')}\n\n## 日级轨迹\n\n|天|政策|治安|经济|民意|粮食|健康|城库|渗透|\n|---|---|---|---|---|---|---|---|---|\n${r.days.map(d=>`|${d.day}|${d.policy}|${Object.values(d.resources).join('|')}|`).join('\n')}\n\n## 决策样本（不是唯一正确动作标签）\n\n${r.decisions.filter(d=>(d.harmful&&d.action==='allow')||(!d.harmful&&d.action!=='allow')).slice(0,30).map(d=>`### 第${d.day}天 ${d.case_id}\n\n动作：${d.action}；P(威胁)：${fmt(d.p_threat)}；赛后危险意图：${d.harmful}\n\n公开理由：${d.reason||'未提供'}\n\n当时证据：${d.visible.map(e=>e.text).join('；')}\n`).join('\n')}\n\n## 可验证性\n\n世界承诺：${r.commitments.world}\n最终日志链：${r.final_chain}\n完整 JSON 含每个动作、当时观察摘要哈希、资源归因、赛后身份及随机种子，可使用精确版本执行重放。浏览器练习日志即使可重放，也不能证明没有事先偷看。\n`;
-}
+function reportMarkdown(e) { return reviewMarkdown(buildReview(e)); }
+
 function download(name,content,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 async function finish() {
   envelope=serverMode?await api(`sessions/${session.id}/report`):{report:engine.report(),metadata:{username:$('username').value.trim()||'Anonymous',model:$('model').value||'Anonymous',participant_type:$('participant').value,effort:$('effort').value,source:'practice-self-reported',...runMetadata}};
@@ -129,7 +129,13 @@ async function finish() {
   for(const d of r.decisions.filter(d=>(d.harmful&&d.action==='allow')||(!d.harmful&&d.action!=='allow')).slice(0,12)) {
     const card=text('div','','fact');card.append(text('strong',`第${d.day}天 · ${d.person_id} · ${actionNames[d.action]}`),text('p',`赛后审计：${d.harmful?'存在危险意图':'无危险意图'}；当时概率 ${d.p_threat??'未提供'}。`),text('p','公开理由：'+(d.reason||'未提供')),text('small','依据：'+d.visible.map(e=>e.text).join(' / ')));$('reviewRows').append(card);
   }
-  if(!serverMode){let rows=readStorage(localStorage,BOARD_KEY,[]);const id=r.final_chain;if(!rows.some(x=>x.id===id)){rows.push({id,username:envelope.metadata.username,participant_type:envelope.metadata.participant_type,effort:envelope.metadata.effort,prompt_hash:envelope.metadata.prompt_hash,ended_at:new Date().toISOString(),model:envelope.metadata.model,version:r.version,content_version:r.content_version,difficulty:r.difficulty,completed:r.completed,days_survived:r.days_survived,score:r.score,metrics:r.metrics,source:'practice-self-reported'});storeValue(localStorage,BOARD_KEY,rows.slice(-80));}}
+  renderReview($('detailedReview'),envelope);
+  if(!serverMode){
+    const saved=readStorage(localStorage,BOARD_KEY,[]),rows=Array.isArray(saved)?saved:[];
+    const entry=scoreEntry(envelope),id=entry.run_id;
+    if(!rows.some(x=>x?.id===id||x?.run_id===id)){rows.push({...entry,id,source:'practice-self-reported'});storeValue(localStorage,BOARD_KEY,rows.slice(-80));}
+  }
+  announceReview(envelope);
   window.dispatchEvent(new CustomEvent('blackgate-complete'));
   await loadBoard();
 }

@@ -1,3 +1,5 @@
+import {scoreEntry} from './leaderboard-data.mjs';
+export {scoreEntry};
 const $=id=>document.getElementById(id),KEY='blackgate_arena_board_v1';
 const safe=x=>String(x??'').replace(/[\r\n<>]/g,' ').slice(0,200);
 export async function renderBoard(){
@@ -18,10 +20,6 @@ export async function renderBoard(){
     if(!rows.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=6;td.textContent='暂无这个版本、难度与挑战类型的成绩。完成一局，留下你的记录。';tr.append(td);$('boardRows').append(tr);}
     $('boardNote').textContent=`${type==='ai'?'AI':'人类'} · ${difficulty} · 引擎 2.0.0 · ${scope==='community'?'跨用户公开自报榜：GitHub 登录后提交，自动格式校验；不是服务端防作弊认证。':'仅此浏览器，完成后自动入榜；不会未经同意上传。'} 同名推理档位不保证跨模型等价；默认与自定义提示词由完整报告记录。`;
   }catch(e){$('boardNote').textContent=e.message;}
-}
-export function scoreEntry(envelope){
-  const {report:r,metadata:m={}}=envelope;
-  return {schema:'blackgate-arena-score/1',run_id:r.final_chain,username:safe(m.username||m.model||'Anonymous'),model:safe(m.model),participant_type:m.participant_type==='ai'?'ai':'human',effort:safe(m.effort||'auto'),prompt_hash:safe(m.prompt_hash||''),prompt_profile:safe(m.prompt_profile||'human'),version:r.version,content_version:r.content_version,difficulty:r.difficulty,completed:!!r.completed,days_survived:r.days_survived,score:r.score,ended_at:new Date().toISOString()};
 }
 export function shareScore(envelope){
   const entry=scoreEntry(envelope);

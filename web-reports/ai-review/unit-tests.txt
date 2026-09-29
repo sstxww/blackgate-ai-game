@@ -1,0 +1,44 @@
+✔ community ingestion stores allowlisted summary only and deduplicates (139.2532ms)
+✔ community ingestion rejects inflated, malformed and secret-like entries (431.4161ms)
+✔ normalize supported endpoint families and retain proxy path (3.3741ms)
+✔ reject credentials, URL query secrets and unencrypted remote URL (1.3008ms)
+✔ list models without brand whitelist (2.2964ms)
+✔ only parse executable final content, not hidden thinking (0.3587ms)
+✔ no action guessing from prose or contradictory alternatives (0.876ms)
+✔ chat carries requested effort and key only in header (80.598ms)
+✔ responses payload is stateless and uses reasoning.effort (0.5443ms)
+✔ Anthropic and Gemini native payload mapping (0.9818ms)
+✔ unsupported effort is not silently downgraded (1.0044ms)
+✔ error and model-output secrets redacted before logging (2.2329ms)
+✔ pre-aborted calls never send requests (1.2979ms)
+✔ in-flight cancellation interrupts fetch (12.1073ms)
+✔ auto fallback is only endpoint absence, then protocol cached (1.4743ms)
+✔ Gemini models pagination and key in header not URL (1.0759ms)
+✔ score-only envelopes cannot manufacture a behavior profile (3.7054ms)
+✔ empty and short runs do not invent traits, probabilities or later phases (1.1443ms)
+✔ miss and coercion rates use their own known-label denominators (0.6489ms)
+✔ null and invalid predictions stay missing while a numeric zero is evaluated (0.474ms)
+✔ style thresholds are explicit and not applied before 12 decisions (0.7204ms)
+✔ phase analysis uses fixed days, not three artificial parts of a short run (0.3961ms)
+✔ resource jumps are observations, with no invented causal attribution (1.0622ms)
+✔ case selection is bounded, deduplicated and separates visible evidence from hindsight (0.784ms)
+✔ Markdown escapes untrusted markup and removes secret-shaped text (0.9045ms)
+✔ a genuine finished referee report stays replayable and unmodified after analysis (1252.668ms)
+✔ public score serialization uses an allowlist, bounded username and no key/url/log/prompt (1.8126ms)
+✔ AI normalization excludes humans, invalid numerics and inconsistent completion (1.1274ms)
+✔ duplicate run hashes cannot multiply samples, including case variants (0.2468ms)
+✔ cohorts isolate source, engine, content, difficulty and full prompt hash (42.5521ms)
+✔ unknown prompt provenance never pretends to be repeat evaluations (0.3799ms)
+✔ model, requested effort, response status and protocol all remain distinct (0.7377ms)
+✔ model summary ranks completion rate and medians rather than cherry-picked best score (0.8682ms)
+✔ finished runs rank ahead of unfinished ones and ties share competition rank (0.858ms)
+✔ self-claimed certification cannot promote community trust (0.1703ms)
+✔ ingestion accepts old summaries and preserves optional effort metadata safely (219.6749ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1656.8771
