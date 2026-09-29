@@ -17,6 +17,16 @@ export function endpoint(raw, requested = 'auto') {
   if (!p) p = protocol === 'gemini' ? '/v1beta' : '/v1';
   return {base:u.origin+p, origin:u.origin, protocol, automatic:requested === 'auto' && detected === 'chat'};
 }
+
+export function gatewayEndpoint(raw) {
+  const value=String(raw||'').trim();
+  if(!value)return '';
+  let u;try{u=new URL(value);}catch{throw Error('兼容网关地址无效，请填写完整 HTTPS 地址。');}
+  if(u.username||u.password||u.search||u.hash)throw Error('兼容网关地址不能包含账号、查询参数或片段。');
+  const local=['localhost','127.0.0.1','[::1]'].includes(u.hostname);
+  if(u.protocol!=='https:'&&!(local&&u.protocol==='http:'))throw Error('兼容网关只支持 HTTPS；本机 localhost 可用 HTTP。');
+  return u.origin+u.pathname.replace(/\/+$/,'');
+}
 export function modelIds(data) {
   const list = Array.isArray(data) ? data : data?.data || data?.models || [];
   if (!Array.isArray(list)) return [];
@@ -52,12 +62,13 @@ const delay=(ms,signal)=>new Promise((resolve,reject)=>{
   signal?.addEventListener('abort',abort,{once:true});
 });
 export class RelayClient {
-  #key; #config; #fetch;
-  constructor({url,key,protocol='auto',fetchImpl=globalThis.fetch}) {
-    this.#config=endpoint(url,protocol); this.#key=String(key||'').trim(); this.#fetch=fetchImpl.bind(globalThis);
+  #key; #config; #gateway; #fetch;
+  constructor({url,key,protocol='auto',gateway='',fetchImpl=globalThis.fetch}) {
+    this.#config=endpoint(url,protocol);this.#gateway=gatewayEndpoint(gateway);this.#key=String(key||'').trim();this.#fetch=fetchImpl.bind(globalThis);
     if(!this.#key && !/https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::|\/)/.test(this.#config.base)) throw Error('请输入 API Key');
   }
   get protocol(){return this.#config.protocol;}
+  get transport(){return this.#gateway?'gateway':'direct';}
   clear(){this.#key='';}
   sanitize(value){
     let s=typeof value==='string'?value:JSON.stringify(value);
@@ -81,7 +92,13 @@ export class RelayClient {
       try{
         onAttempt({attempt:attempt+1,protocol});
         const headers=this.headers(protocol);if(body)headers['Content-Type']='application/json';
-        const res=await this.#fetch(this.#config.base+path,{method:body?'POST':'GET',headers,body:body?JSON.stringify(body):undefined,signal:aborter.signal,credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer'});
+        let requestUrl=this.#config.base+path;
+        if(this.#gateway){
+          requestUrl=this.#gateway;
+          headers['X-Blackgate-Target']=this.#config.base;
+          headers['X-Blackgate-Path']=path;
+        }
+        const res=await this.#fetch(requestUrl,{method:body?'POST':'GET',headers,body:body?JSON.stringify(body):undefined,signal:aborter.signal,credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer'});
         const raw=await res.text();
         if(!res.ok){
           if([429,502,503,504].includes(res.status)&&attempt<2){
@@ -99,7 +116,7 @@ export class RelayClient {
       }catch(e){
         if(signal?.aborted)throw new DOMException('已停止','AbortError');
         if(timedOut)throw Error('请求超过 5 分钟，已暂停。服务商可能仍计费；本页不会自动重复这次请求。');
-        if(e instanceof TypeError)throw Error('浏览器无法连接该接口：请检查 CORS、网络与 HTTPS。项目不会把 Key 转交第三方代理。');
+        if(e instanceof TypeError)throw Error(this.#gateway?'浏览器无法连接兼容网关：请检查网关地址、HTTPS 与网关 CORS。':'浏览器无法直连该接口：通常是中转站 CORS/OPTIONS 被拦。可在“连接帮助”里填写你部署的 Blackgate 兼容网关。');
         throw e;
       }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
     }
@@ -143,6 +160,6 @@ export class RelayClient {
     }
     if(response.data?.status==='incomplete')throw Error('模型响应未完成，未执行任何动作。');
     const text=responseText(response.data);if(!text)throw Error('模型没有返回可执行的正文。可能输出被截断或模型只返回了推理内容。');
-    return {text:this.sanitize(text),usage:usage(response.data),latency:response.latency,protocol,requestedEffort:options.effort,effortStatus:options.effort==='auto'?'provider-default':'requested-not-attested'};
+    return {text:this.sanitize(text),usage:usage(response.data),latency:response.latency,protocol,transport:this.transport,requestedEffort:options.effort,effortStatus:options.effort==='auto'?'provider-default':'requested-not-attested'};
   }
 }
