@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blackgate 模型决策档案</title>
+  <link rel="stylesheet" href="./model.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <a href="./leaderboard.html" class="back">← 返回排行榜</a>
+      <span class="eyebrow">MODEL DECISION DOSSIER</span>
+      <h1 id="title">模型决策档案</h1>
+      <p id="subtitle">累计运行数据、策略偏向与典型风险。</p>
+    </div>
+    <a class="btn primary" href="./chat.html">让这个模型再跑一局</a>
+  </header>
+
+  <main class="wrap">
+    <section id="empty" class="empty" hidden>还没有这个模型的数据。</section>
+    <div id="view" hidden>
+      <section class="metrics" id="metrics"></section>
+
+      <section class="section">
+        <span class="eyebrow">CURRENT PROFILE</span>
+        <h2>当前模型画像</h2>
+        <div class="grid3">
+          <article class="card"><h3>决策风格</h3><ul id="styleList"></ul></article>
+          <article class="card"><h3>观察到的优势</h3><ul id="strengthList"></ul></article>
+          <article class="card"><h3>主要风险</h3><ul id="riskList"></ul></article>
+        </div>
+        <p id="profileNote" class="muted"></p>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">AGGREGATE BEHAVIOR</span>
+        <h2>累计运行统计</h2>
+        <div class="grid3" id="aggregateGrid"></div>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">RUN HISTORY</span>
+        <h2>运行记录</h2>
+        <div class="runs" id="runs"></div>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">INTERPRETATION</span>
+        <h2>怎么读这个画像？</h2>
+        <article class="card prose" id="interpretation"></article>
+      </section>
+    </div>
+  </main>
+  <script src="./analytics/report.js"></script>
+  <script src="./analytics/recorder.js"></script>
+  <script src="./model.js"></script>
+</body>
+</html>

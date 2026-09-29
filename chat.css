@@ -27,6 +27,8 @@ button:hover{border-color:#746b58}
 button.primary{background:#7d2824;border-color:#a03a33}
 textarea{width:100%;min-height:140px;resize:vertical;border:1px solid var(--line);border-radius:10px;background:#0d0d0b;color:#dfd8c8;padding:11px;line-height:1.45;font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;font-size:12px}
 #aiReply{min-height:92px}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.meta-grid label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--muted)}.meta-grid input{width:100%;background:#0d0d0b;border:1px solid var(--line);border-radius:8px;color:var(--text);padding:8px}
+.link-btn{border:1px solid #494337;background:#171611;color:#d9c78e;text-decoration:none;padding:8px 11px;border-radius:9px;font-weight:700;font-size:12px}.link-btn[hidden]{display:none}
 .status{font-size:12px;color:var(--muted)}
 .status.ok{color:#8fd19e}.status.bad{color:#ff9690}
 .hint,details p{color:var(--muted);font-size:12px;line-height:1.55}

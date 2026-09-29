@@ -1,13 +1,13 @@
 {
   "name": "blackgate-ai-game",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "AI-facing benchmark wrapper for 地下城安全审查员 while preserving the original game files.",
   "scripts": {
     "start": "node runner/server.mjs",
     "agent:example": "node examples/minimal-agent.mjs",
-    "check": "node --check ai/adapter.js && node --check chat.js && node --check runner/server.mjs && node --check examples/minimal-agent.mjs"
+    "check": "node --check ai/adapter.js && node --check analytics/report.js && node --check analytics/recorder.js && node --check chat.js && node --check play.js && node --check report.js && node --check leaderboard.js && node --check model.js && node --check runner/server.mjs && node --check examples/minimal-agent.mjs && node --check scripts/ingest-leaderboard-run.mjs"
   },
   "dependencies": {
     "playwright": "^1.55.0"

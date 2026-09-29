@@ -5,17 +5,28 @@
 <h1 align="center">Blackgate AI Game · 地下城安全审查员</h1>
 
 <p align="center">
-  一个专门给 AI 玩的长期决策游戏：<b>不完全信息 · 稀缺资源 · 延迟后果 · 14 天生存</b>
+  <a href="./README.zh-CN.md"><b>🇨🇳 中文完整说明</b></a>
+  ·
+  <a href="./README.md"><b>README</b></a>
 </p>
 
 <p align="center">
-  <a href="https://sstxww.github.io/blackgate-ai-game/"><b>🎮 Play Online</b></a>
+  一个专门检测 AI <b>推理、证据判断、资源管理与长期决策能力</b> 的游戏型 Benchmark：<br>
+  <b>不完全信息 · 稀缺资源 · 延迟后果 · 14 天连续决策 · 赛后复盘</b>
+</p>
+
+<p align="center">
+  <a href="https://sstxww.github.io/blackgate-ai-game/play.html"><b>🎮 Play Online + Auto Report</b></a>
   ·
   <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 Play with ChatGPT / Claude / Gemini</b></a>
   ·
   <a href="./AI_SPEC.md"><b>🤖 Agent API</b></a>
   ·
   <a href="./PROMPTS.md"><b>🧠 Prompt Pack</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 Leaderboard</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 Postmortem</b></a>
 </p>
 
 <p align="center">
@@ -25,6 +36,28 @@
   <img src="https://img.shields.io/badge/Codex-not%20required-4c9f70" alt="Codex not required" />
   <img src="https://img.shields.io/badge/API%20key-not%20required%20for%20Chat%20Mode-4c9f70" alt="API key not required" />
 </p>
+
+---
+
+## What this benchmark is really about
+
+Blackgate is designed to evaluate **reasoning and long-horizon decision behavior**, not just whether a model can click the correct button.
+
+Each completed run can now produce an **After Action Review / postmortem** containing:
+
+- survival day and final score;
+- daily decision accuracy;
+- allow / reject / search / isolate mix;
+- early / mid / late strategy shifts;
+- sampled false-positive and false-negative behavior;
+- resource trajectory;
+- failure mode;
+- decision-style tags;
+- strengths, risks, and adaptation notes.
+
+Over many runs, those reports become a **model behavior profile**: whether a model tends to be enforcement-heavy, search-heavy, risk-tolerant, overly conservative, stable, or prone to late-game strategy drift.
+
+Current early experimental ordering is shown on the [Leaderboard](https://sstxww.github.io/blackgate-ai-game/leaderboard.html). It is explicitly separated from future fixed-seed verified rankings.
 
 ---
 
@@ -138,9 +171,13 @@ Then use the **Chat Mode** page to copy each visible game state.
 
 ## 🎮 Human mode
 
-The original game is still available unchanged:
+For a human run **with automatic local recording and a post-game report**:
 
-### 👉 https://sstxww.github.io/blackgate-ai-game/
+### 👉 https://sstxww.github.io/blackgate-ai-game/play.html
+
+The untouched original human UI is also available at:
+
+https://sstxww.github.io/blackgate-ai-game/
 
 The gameplay files are intentionally kept separate from AI tooling:
 

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blackgate 赛后复盘报告</title>
+  <link rel="stylesheet" href="./report.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <a href="./" class="back">← 返回项目</a>
+      <span class="eyebrow">AFTER ACTION REVIEW</span>
+      <h1>赛后复盘报告</h1>
+      <p>不是只告诉你“得了多少分”，而是解释这一局为什么会变成这样。</p>
+    </div>
+    <div class="hero-actions">
+      <a href="./leaderboard.html" class="btn">查看排行榜</a>
+      <button id="submitBtn" class="btn primary">提交到公开社区榜</button>
+    </div>
+  </header>
+
+  <main id="app" class="wrap">
+    <section class="empty" id="emptyState">
+      <h2>还没有可复盘的本机记录</h2>
+      <p>请先从 Chat Mode 或在线玩家模式完成一局。</p>
+      <div class="links">
+        <a class="btn primary" href="./chat.html">让 AI 玩一局</a>
+        <a class="btn" href="./play.html">自己在线玩</a>
+      </div>
+    </section>
+
+    <div id="reportView" hidden>
+      <section class="summary-grid">
+        <article class="card headline">
+          <span class="label">模型 / 玩家</span>
+          <h2 id="modelName">—</h2>
+          <p id="summaryText"></p>
+          <div id="styleTags" class="tags"></div>
+        </article>
+        <article class="metric"><span>存活</span><b id="daysMetric">—</b><small>天</small></article>
+        <article class="metric"><span>最终分</span><b id="scoreMetric">—</b><small>/ 100</small></article>
+        <article class="metric"><span>决策准确率</span><b id="accuracyMetric">—</b><small>%</small></article>
+        <article class="metric"><span>搜查率</span><b id="searchMetric">—</b><small>%</small></article>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">DECISION PROFILE</span>
+            <h2>决策风格画像</h2>
+          </div>
+        </div>
+        <div class="three">
+          <article class="card"><h3>做得好的地方</h3><ul id="strengths"></ul></article>
+          <article class="card"><h3>主要风险</h3><ul id="risks"></ul></article>
+          <article class="card"><h3>策略变化</h3><p id="adaptation"></p><p class="muted" id="failureReason"></p></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">ACTION MIX</span>
+        <h2>动作结构</h2>
+        <div class="bars" id="actionBars"></div>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">POSTMORTEM METRICS</span>
+        <h2>复盘诊断指标</h2>
+        <div class="diagnostics" id="diagnosticGrid"></div>
+        <p class="muted" id="auditScopeNote"></p>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">EARLY / MID / LATE</span>
+        <h2>前中后期策略变化</h2>
+        <div class="phase-grid" id="phaseGrid"></div>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">TIMELINE</span>
+        <h2>每日运行记录</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>天数</th><th>案件</th><th>搜查</th><th>准确率</th><th>治安</th><th>经济</th><th>民意</th><th>警戒</th></tr></thead>
+            <tbody id="timelineBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <span class="eyebrow">AUDIT SAMPLE</span>
+        <h2>复核样本</h2>
+        <div id="auditList" class="audit-list"></div>
+        <p class="muted">这里使用的是游戏日结提供的抽样复核，因此“误拒率/漏放率”属于抽样指标，不等同于全量混淆矩阵。</p>
+      </section>
+
+      <section class="section raw-card">
+        <details>
+          <summary>查看本局机器可读报告 JSON</summary>
+          <pre id="rawJson"></pre>
+        </details>
+      </section>
+    </div>
+  </main>
+
+  <script src="./analytics/report.js"></script>
+  <script src="./analytics/recorder.js"></script>
+  <script src="./report.js"></script>
+</body>
+</html>

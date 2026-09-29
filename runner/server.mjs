@@ -45,15 +45,38 @@ async function readBody(req) {
   return raw ? JSON.parse(raw) : {};
 }
 
-async function startSession(difficulty = "normal") {
-  if (!browser) browser = await chromium.launch({ headless });
+async function launchBrowser() {
+  try {
+    return await chromium.launch({ headless });
+  } catch (error) {
+    if (process.platform === "win32") {
+      return chromium.launch({ headless, channel: "msedge" });
+    }
+    throw error;
+  }
+}
+
+async function startSession(difficulty = "normal", meta = {}) {
+  if (!browser) browser = await launchBrowser();
   if (context) await context.close();
   context = await browser.newContext();
   page = await context.newPage();
   await page.goto(`http://${host}:${port}/ai/agent.html`, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => !!window.BlackgateAI);
+  await page.waitForFunction(() => !!window.BlackgateAI && !!window.BlackgateRunRecorder);
   await page.evaluate(level => window.BlackgateAI.setDifficulty(level), difficulty);
-  return page.evaluate(() => window.BlackgateAI.act("start"));
+  const state = await page.evaluate(() => window.BlackgateAI.act("start"));
+  await page.evaluate(({ difficulty, meta, state }) => {
+    window.BlackgateRunRecorder.start({
+      player_type: "ai",
+      participant: meta.participant || "",
+      model: meta.model || "API Agent",
+      provider: meta.provider || "",
+      difficulty,
+      source: "json-api",
+      prompt_profile: meta.prompt_profile || ""
+    }, state);
+  }, { difficulty, meta, state });
+  return state;
 }
 
 async function ensureSession() {
@@ -102,7 +125,12 @@ const server = http.createServer(async (req, res) => {
       if (!["easy", "normal", "hard"].includes(difficulty)) {
         return json(res, 400, { error: "difficulty must be easy, normal, or hard" });
       }
-      return json(res, 200, await startSession(difficulty));
+      return json(res, 200, await startSession(difficulty, {
+        model: body.model,
+        provider: body.provider,
+        participant: body.participant,
+        prompt_profile: body.prompt_profile
+      }));
     }
 
     if (url.pathname === "/api/state" && req.method === "GET") {
@@ -117,8 +145,32 @@ const server = http.createServer(async (req, res) => {
       if (!["start", "continue", "allow", "reject", "search", "isolate", "next_day"].includes(action)) {
         return json(res, 400, { error: "invalid action" });
       }
-      const state = await page.evaluate(a => window.BlackgateAI.act(a), action);
+      const state = await page.evaluate(async a => {
+        const before = window.BlackgateAI.getState();
+        if (!before.allowed_actions.includes(a)) {
+          throw new Error("action not allowed in current phase: " + a);
+        }
+        const after = await window.BlackgateAI.act(a);
+        window.BlackgateRunRecorder.recordAction(before, a, after);
+        return after;
+      }, action);
       return json(res, 200, state);
+    }
+
+    if (url.pathname === "/api/report" && req.method === "GET") {
+      await ensureSession();
+      const report = await page.evaluate(() => {
+        const finished = window.BlackgateRunRecorder.get("latest");
+        if (finished?.postmortem) return finished.postmortem;
+        const active = window.BlackgateRunRecorder.active();
+        return active ? { status: "running", run_id: active.id, days: active.days } : null;
+      });
+      return json(res, 200, report || { status: "no-run" });
+    }
+
+    if (url.pathname === "/api/runs" && req.method === "GET") {
+      await ensureSession();
+      return json(res, 200, await page.evaluate(() => window.BlackgateRunRecorder.runs()));
     }
 
     return serveStatic(req, res, url.pathname);

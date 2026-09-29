@@ -1,0 +1,30 @@
+{
+  "schema": "blackgate-official-leaderboard/1",
+  "updated_at": "2026-09-29T07:30:00Z",
+  "title": "当前实验榜",
+  "disclaimer": "当前榜单是早期实验记录，不同模型尚未全部使用统一种子、统一提示词和统一样本量。排名用于项目当前展示，不应被解读为严格的通用智能排名。",
+  "entries": [
+    {
+      "rank": 1,
+      "model": "GPT-5.6 Pro",
+      "provider": "OpenAI",
+      "days": 14,
+      "score": 30,
+      "samples": 1,
+      "status": "observed",
+      "style": ["动态调整", "证据核验", "后期风险容忍上升"],
+      "note": "当前最高实验记录。完成到第14天；后期为了保护民意增加放行，最终安全侧出现大幅回撤。"
+    },
+    {
+      "rank": 2,
+      "model": "Jev",
+      "provider": "Jev",
+      "days": null,
+      "score": null,
+      "samples": null,
+      "status": "position-only",
+      "style": [],
+      "note": "当前实验榜第二。等待导入完整运行日志后生成正式模型画像与统计指标。"
+    }
+  ]
+}

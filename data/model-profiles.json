@@ -1,0 +1,40 @@
+{
+  "schema": "blackgate-model-profiles/1",
+  "updated_at": "2026-09-29T07:30:00Z",
+  "profiles": [
+    {
+      "model": "GPT-5.6 Pro",
+      "rank": 1,
+      "sample_count": 1,
+      "confidence": "very-low",
+      "status": "早期观察",
+      "observed_style": [
+        "中段能通过搜查把单日判断准确率推到较高水平",
+        "会根据资源状态改变风险偏好，而不是始终执行固定阈值",
+        "后期民意接近危险线时明显增加放行，安全侧因此承担更大的尾部风险"
+      ],
+      "observed_strengths": [
+        "能够维持较长的多日决策链",
+        "有明显的资源反馈调整行为",
+        "搜查后的证据利用能力较强"
+      ],
+      "observed_risks": [
+        "资源逼近边界时可能发生策略摆动",
+        "为保护某一指标而牺牲另一指标的幅度可能过大",
+        "单局样本不足，暂不能视为稳定模型特征"
+      ],
+      "note": "这是一次早期运行的事后复盘，不是严格能力定论。后续会随着样本增加自动更新。"
+    },
+    {
+      "model": "Jev",
+      "rank": 2,
+      "sample_count": 0,
+      "confidence": "none",
+      "status": "等待数据",
+      "observed_style": [],
+      "observed_strengths": [],
+      "observed_risks": [],
+      "note": "当前实验榜第二；完整日志导入后才生成可比较的长期画像。"
+    }
+  ]
+}

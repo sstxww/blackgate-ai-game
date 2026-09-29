@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blackgate 在线挑战 · 自动生成复盘</title>
+  <style>
+    html,body{margin:0;width:100%;height:100%;background:#090908;color:#eee8db;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    .bar{height:44px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;background:#151512;border-bottom:1px solid #353127;font-size:12px}
+    .bar a{color:#d7b46a;text-decoration:none;font-weight:800}.bar .right{display:flex;gap:8px;align-items:center}
+    input{background:#0e0e0c;border:1px solid #474136;color:#eee8db;border-radius:7px;padding:6px 8px;min-width:140px}
+    button,.report{background:#762923;color:#fff;border:1px solid #9b3a33;border-radius:7px;padding:7px 10px;text-decoration:none;cursor:pointer;font-weight:700}
+    #gameFrame{width:100%;height:calc(100vh - 44px);border:0;display:block}
+    .hint{color:#9e9688}.report[hidden]{display:none}
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div><a href="./leaderboard.html">排行榜</a> <span class="hint">· 人类在线挑战也会在本机自动记录并生成赛后报告</span></div>
+    <div class="right"><input id="participant" placeholder="你的名字 / 昵称" value="Human Player" /><a id="reportLink" class="report" href="./report.html" hidden>查看本局复盘</a></div>
+  </div>
+  <iframe id="gameFrame" src="./index.html" title="地下城安全审查员"></iframe>
+  <script src="./ai/adapter.js"></script>
+  <script src="./analytics/report.js"></script>
+  <script src="./analytics/recorder.js"></script>
+  <script src="./play.js"></script>
+</body>
+</html>

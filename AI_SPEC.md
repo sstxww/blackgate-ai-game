@@ -11,13 +11,18 @@ Run the local runner, then an AI only needs two endpoints:
 
 Other actions are `reject`, `search`, `isolate`, and `next_day`.
 
+The runner also records the run for post-game analysis:
+
+- `GET /api/report` — latest postmortem when a run is finished, or current run status while it is still running.
+- `GET /api/runs` — completed runs stored by the current runner browser profile.
+
 Start a clean run with:
 
 ```http
 POST /api/new
 Content-Type: application/json
 
-{"difficulty":"normal"}
+{"difficulty":"normal","model":"GPT-5.6 Pro","provider":"OpenAI","prompt_profile":"default"}
 ```
 
 ## State contract

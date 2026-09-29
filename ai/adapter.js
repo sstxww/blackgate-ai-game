@@ -104,9 +104,16 @@
         pressure: text(d, "#pressureText"),
         pending_events: numericText(d, "#pendingEvents")
       },
-      allowed_actions: Object.entries(ACTIONS)
-        .filter(([, selector]) => !disabled(d, selector))
-        .map(([name]) => name)
+      allowed_actions: (() => {
+        if (phase === "start") {
+          const out = ["start"];
+          const cont = d.querySelector("#continueBtn");
+          if (cont && !cont.classList.contains("hidden")) out.push("continue");
+          return out;
+        }
+        if (phase === "report" || phase === "finished") return ["next_day"];
+        return ["allow","reject","search","isolate"].filter(name => !disabled(d, ACTIONS[name]));
+      })()
     };
 
     if (phase === "case") {

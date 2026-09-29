@@ -96,7 +96,13 @@ REASON: 用不超过两句话说明依据
 
     try {
       setStatus(`执行：${action}…`);
-      await window.BlackgateAI.act(action);
+      const before = state;
+      const after = await window.BlackgateAI.act(action);
+      const recorded = window.BlackgateRunRecorder?.recordAction(before, action, after);
+      if (recorded?.report) {
+        $("reportLink").href = "./report.html?id=" + encodeURIComponent(recorded.run.id);
+        $("reportLink").hidden = false;
+      }
       $("aiReply").value = "";
       refresh();
       setStatus(`已执行：${action}`, "ok");
@@ -108,9 +114,19 @@ REASON: 用不超过两句话说明依据
   $("newGameBtn").addEventListener("click", async () => {
     try {
       setStatus("正在创建新局…");
-      await window.BlackgateAI.reset($("difficultySelect").value, true);
+      const state = await window.BlackgateAI.reset($("difficultySelect").value, true);
+      window.BlackgateRunRecorder?.start({
+        player_type: "ai",
+        participant: "",
+        model: $("modelNameInput").value.trim() || "Unknown AI",
+        provider: $("providerInput").value.trim() || "",
+        difficulty: $("difficultySelect").value,
+        source: "chat-relay",
+        prompt_profile: "default-chat-relay"
+      }, state);
+      $("reportLink").hidden = true;
       refresh();
-      setStatus("新局已开始", "ok");
+      setStatus("新局已开始并开始记录", "ok");
     } catch (err) {
       setStatus(err?.message || String(err), "bad");
     }
@@ -123,6 +139,11 @@ REASON: 用不超过两句话说明依据
   $("applyBtn").addEventListener("click", applyReply);
 
   window.addEventListener("blackgate-ai-ready", refresh);
+  window.addEventListener("blackgate-run-finished", e => {
+    $("reportLink").href = "./report.html?id=" + encodeURIComponent(e.detail.run.id);
+    $("reportLink").hidden = false;
+    setStatus("本局结束：复盘报告已生成", "ok");
+  });
   setInterval(() => {
     if (window.BlackgateAI) refresh();
   }, 1200);
