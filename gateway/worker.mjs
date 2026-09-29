@@ -2,6 +2,7 @@ const DEFAULT_ORIGINS=['https://sstxww.github.io'];
 const MAX_BODY=2*1024*1024;
 const REQUEST_HEADERS=['accept','content-type','authorization','x-api-key','x-goog-api-key','anthropic-version','anthropic-beta','anthropic-dangerous-direct-browser-access'];
 const RESPONSE_HEADERS=['content-type','retry-after','x-request-id','request-id'];
+const RATE_BUCKETS=new Map();
 
 function configuredOrigins(env){
   const raw=String(env?.ALLOWED_ORIGINS||'').trim();
@@ -45,7 +46,10 @@ function parseTarget(raw,env){
 function parsePath(raw){
   const p=String(raw||'').trim();
   if(!p.startsWith('/')||p.startsWith('//')||p.includes('\\')||p.includes('#')||/[\u0000-\u001f\u007f]/.test(p)||p.length>2048)throw Error('无效的 X-Blackgate-Path。');
-  return p;
+  let u;try{u=new URL('https://blackgate.invalid'+p);}catch{throw Error('无效的 X-Blackgate-Path。');}
+  const allowed=u.pathname==='/models'||u.pathname==='/chat/completions'||u.pathname==='/responses'||u.pathname==='/messages'||/^\/models\/[^/]+:generateContent$/.test(u.pathname);
+  if(!allowed)throw Error('该路径不是 Blackgate 允许的模型 API 路径。');
+  return u.pathname+u.search;
 }
 function upstreamUrl(base,path){
   const basePath=base.pathname==='/'?'':base.pathname.replace(/\/+$/,'');
@@ -71,6 +75,22 @@ function responseHeaders(upstream,origin){
   return h;
 }
 
+function clientKey(request){
+  const h=request.headers;
+  return (h.get('x-vercel-forwarded-for')||h.get('cf-connecting-ip')||h.get('x-real-ip')||h.get('x-forwarded-for')||'unknown').split(',')[0].trim().slice(0,96);
+}
+function rateAllowed(request,env){
+  const limit=Math.max(30,Math.min(600,Number(env?.RATE_LIMIT_PER_MINUTE||240)||240));
+  const now=Date.now(),window=Math.floor(now/60000),key=clientKey(request);
+  const entry=RATE_BUCKETS.get(key);
+  if(!entry||entry.window!==window){RATE_BUCKETS.set(key,{window,count:1});}
+  else if(++entry.count>limit)return false;
+  if(RATE_BUCKETS.size>4096){
+    for(const [k,v] of RATE_BUCKETS){if(v.window<window)RATE_BUCKETS.delete(k);}
+  }
+  return true;
+}
+
 export default {
   async fetch(request,env={}){
     const url=new URL(request.url);
@@ -82,6 +102,7 @@ export default {
     if(!originAllowed(origin,env))return reply('null',403,{error:{message:'Origin 不在允许列表。',type:'gateway_origin_error'}});
     if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...cors(origin),'X-Blackgate-Gateway':'stateless-v1'}});
     if(!['GET','POST'].includes(request.method))return reply(origin,405,{error:{message:'只允许 GET/POST。',type:'gateway_method_error'}});
+    if(!rateAllowed(request,env))return reply(origin,429,{error:{message:'公共网关请求过于频繁，请稍后重试。',type:'gateway_rate_limit'}});
 
     let target,path;
     try{

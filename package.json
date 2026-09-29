@@ -15,7 +15,8 @@
     "balance": "node v2/scripts/balance.mjs",
     "corpus": "node v2/scripts/build-corpus.mjs",
     "replay": "node v2/scripts/replay.mjs",
-    "build:pages": "node scripts/prepare-pages.mjs"
+    "build:pages": "node scripts/prepare-pages.mjs",
+    "start:gateway": "node gateway/server.mjs"
   },
   "dependencies": {
     "playwright": "^1.55.0"
