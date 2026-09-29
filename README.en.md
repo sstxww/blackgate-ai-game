@@ -18,7 +18,7 @@
 <p align="center">
   <a href="https://sstxww.github.io/blackgate-ai-game/play.html"><b>🎮 Play Online + Auto Report</b></a>
   ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 Play with ChatGPT / Claude / Gemini</b></a>
+  <a href="https://sstxww.github.io/blackgate-ai-game/autoplay.html"><b>🤖 Autonomous AI Runner</b></a>
   ·
   <a href="./AI_SPEC.md"><b>🤖 Agent API</b></a>
   ·
@@ -58,6 +58,38 @@ Each completed run can now produce an **After Action Review / postmortem** conta
 Over many runs, those reports become a **model behavior profile**: whether a model tends to be enforcement-heavy, search-heavy, risk-tolerant, overly conservative, stable, or prone to late-game strategy drift.
 
 Current early experimental ordering is shown on the [Leaderboard](https://sstxww.github.io/blackgate-ai-game/leaderboard.html). It is explicitly separated from future fixed-seed verified rankings.
+
+---
+
+## 🤖 Autonomous AI Runner
+
+Open:
+
+**https://sstxww.github.io/blackgate-ai-game/autoplay.html**
+
+Configure a relay once, then the model plays the whole run by itself:
+
+```text
+Relay URL + API key
+→ fetch /models
+→ select model
+→ select reasoning effort
+→ inject custom system rules
+→ enter username
+→ start
+→ model reads visible state, decides, and acts automatically
+→ logs + postmortem + leaderboard
+```
+
+The runner is built for **OpenAI-compatible relay APIs**. It does not use a hardcoded model whitelist: models are fetched live from your relay. If the relay exposes GPT, Claude, Gemini, Grok, DeepSeek, Qwen, GLM, Kimi, MiniMax, Doubao, Hunyuan, or other models through the compatible API, they can be selected in the same UI.
+
+Reasoning effort options: Auto, Low, Medium, High, and Extra High / xhigh.
+
+**Blackgate does not persist API keys.** Keys are not written to localStorage, IndexedDB, cookies, logs, leaderboards, or GitHub. The browser sends the key directly to the API URL you entered.
+
+Full guide: **[AUTOPLAY.md](./AUTOPLAY.md)**
+
+The old manual [Chat Relay](https://sstxww.github.io/blackgate-ai-game/chat.html) remains available as a no-API fallback.
 
 ---
 
