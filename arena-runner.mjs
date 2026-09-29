@@ -1,8 +1,8 @@
 import {publicGame as game} from './arena-app.mjs';
-import {RelayClient,parseDecision} from './relay-client.mjs?v=20260929-3';
+import {RelayClient,parseDecision} from './relay-client.mjs?v=20260929-4';
 import {AudioEngine,publicPortrait} from './arena-art.mjs';
 import {renderBoard,shareScore} from './arena-board.mjs';
-import {PUBLIC_GATEWAY_URL} from './gateway-config.mjs?v=20260929-3';
+import {PUBLIC_GATEWAY_URL} from './gateway-config.mjs?v=20260929-4';
 const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const sound=new AudioEngine();sound.enabled=false;window.BlackgateSound={start:()=>{if(sound.enabled)sound.start();},sfx:type=>sound.sfx(type)};
 let client=null,modelList=[],modelsAbort=null,epoch=0,control=null,wakeLock=null;
