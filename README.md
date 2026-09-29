@@ -5,401 +5,306 @@
 <h1 align="center">Blackgate AI Game · 地下城安全审查员</h1>
 
 <p align="center">
-  <a href="./README.zh-CN.md"><b>🇨🇳 中文完整说明</b></a>
-  ·
-  <a href="./README.md"><b>README</b></a>
+  <b>专门测试 AI 推理、证据判断、资源管理和长期决策能力的游戏型 Benchmark</b>
 </p>
 
 <p align="center">
-  一个专门检测 AI <b>推理、证据判断、资源管理与长期决策能力</b> 的游戏型 Benchmark：<br>
-  <b>不完全信息 · 稀缺资源 · 延迟后果 · 14 天连续决策 · 赛后复盘</b>
+  <a href="./README.md"><b>🇨🇳 简体中文</b></a>
+  ·
+  <a href="./README.en.md"><b>🇺🇸 English</b></a>
 </p>
 
 <p align="center">
-  <a href="https://sstxww.github.io/blackgate-ai-game/play.html"><b>🎮 Play Online + Auto Report</b></a>
+  <a href="https://sstxww.github.io/blackgate-ai-game/play.html"><b>🎮 在线挑战 + 自动复盘</b></a>
   ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 Play with ChatGPT / Claude / Gemini</b></a>
+  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 让聊天 AI 玩</b></a>
   ·
-  <a href="./AI_SPEC.md"><b>🤖 Agent API</b></a>
+  <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 AI 排行榜</b></a>
   ·
-  <a href="./PROMPTS.md"><b>🧠 Prompt Pack</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 Leaderboard</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 Postmortem</b></a>
+  <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 赛后复盘</b></a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/github/stars/sstxww/blackgate-ai-game?style=social" alt="GitHub stars" />
   <img src="https://img.shields.io/github/license/sstxww/blackgate-ai-game" alt="license" />
-  <img src="https://img.shields.io/badge/AI-Chat%20%2B%20Agent-d7b46a" alt="AI modes" />
-  <img src="https://img.shields.io/badge/Codex-not%20required-4c9f70" alt="Codex not required" />
-  <img src="https://img.shields.io/badge/API%20key-not%20required%20for%20Chat%20Mode-4c9f70" alt="API key not required" />
+  <img src="https://img.shields.io/badge/Benchmark-长期决策-d7b46a" alt="benchmark" />
+  <img src="https://img.shields.io/badge/Codex-不需要-4c9f70" alt="Codex not required" />
 </p>
 
 ---
 
-## What this benchmark is really about
-
-Blackgate is designed to evaluate **reasoning and long-horizon decision behavior**, not just whether a model can click the correct button.
-
-Each completed run can now produce an **After Action Review / postmortem** containing:
-
-- survival day and final score;
-- daily decision accuracy;
-- allow / reject / search / isolate mix;
-- early / mid / late strategy shifts;
-- sampled false-positive and false-negative behavior;
-- resource trajectory;
-- failure mode;
-- decision-style tags;
-- strengths, risks, and adaptation notes.
-
-Over many runs, those reports become a **model behavior profile**: whether a model tends to be enforcement-heavy, search-heavy, risk-tolerant, overly conservative, stable, or prone to late-game strategy drift.
-
-Current early experimental ordering is shown on the [Leaderboard](https://sstxww.github.io/blackgate-ai-game/leaderboard.html). It is explicitly separated from future fixed-seed verified rankings.
-
----
-
-## Why this exists
-
-Most “AI games” accidentally benchmark **browser control** more than decision quality:
-
-```text
-screenshot → OCR / vision → find button → click → screenshot again
-```
-
-Blackgate adds a machine-facing layer without changing the original game:
-
-```text
-visible state → AI decision → one action → next state
-```
-
-That means the same game can be played by:
-
-- normal humans in the original UI;
-- **ChatGPT / Claude / Gemini / Grok in an ordinary chat window**;
-- coding/agent systems through a browser JS API;
-- scripts and model harnesses through a JSON HTTP API.
+> **这是一个用于测试 AI 推理与长期决策能力的游戏型 Benchmark。**
+>
+> 它不只看 AI 会不会判断一个 NPC，而是观察模型在 **14 天连续决策、有限资源、不完全信息、延迟后果** 下，如何权衡安全、经济、民意与风险。
 
 <p align="center">
-  <img src="./assets/architecture.svg" alt="Architecture" width="92%" />
+  <a href="https://sstxww.github.io/blackgate-ai-game/"><b>🎮 在线玩</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 让 ChatGPT / Claude / Gemini / Jev 玩</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 排行榜</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 赛后复盘</b></a>
 </p>
 
 ---
 
-## 💬 Easiest: let a normal Chat AI play online
+## 这个项目到底测什么？
 
-**No Codex. No Computer Use. No API key.**
+Blackgate 不把“模型答对一道题”当成最终目标。
 
-Open:
+真正想测的是：
 
-### 👉 https://sstxww.github.io/blackgate-ai-game/chat.html
+- **证据推理**：能不能区分噪声、弱证据和强证据；
+- **不完全信息决策**：不知道真实身份时是否能做合理判断；
+- **资源管理**：搜查令、隔离位有限，什么时候值得花；
+- **风险控制**：漏放危险目标和误伤正常旅客的代价完全不同；
+- **长期规划**：今天的正确动作可能几天后才体现后果；
+- **策略适应**：模型会不会根据治安、民意、经济、警戒改变策略；
+- **一致性**：跑到后期压力变大后，决策标准是否会漂移；
+- **复盘能力**：一局结束后，能不能解释自己为什么输、偏向什么策略。
 
-The page is a universal **Chat Relay**:
+所以这个项目更接近：
 
-1. Start the game on the left.
-2. Click **“复制完整包”** once when opening a fresh AI chat.
-3. Paste it into ChatGPT / Claude / Gemini / Grok.
-4. The AI replies with one action.
-5. Paste the reply back into the page and click **“解析并执行”**.
-6. Repeat.
+> **长期决策能力测试 + 事后行为分析**
 
-The AI can answer naturally:
+而不是单纯的“分类准确率”。
+
+---
+
+## 排行榜怎么排？
+
+当前分三层：
+
+### 1. 当前实验榜
+
+这是项目早期的真实实验记录，用于快速比较和调试。
+
+目前：
+
+1. **GPT-5.6 Pro**
+2. **Jev**
+
+早期样本不是统一随机种子，因此页面会明确标记为“实验榜”，不会假装是严格科学结论。
+
+### 2. 社区公开榜
+
+任何人完成一局以后，都可以从赛后报告页一键提交。
+
+排序规则：
+
+1. **存活天数**
+2. **最终综合分**
+3. **日均准确率**
+
+社区榜属于 **self-reported / 自报成绩**。
+
+### 3. 固定基准验证榜（规划中）
+
+后续会加入固定种子与统一案件集，让所有模型面对完全一样的局面。
+
+只有这一层才适合做更严格的模型横向比较。
+
+---
+
+## 一局结束以后会生成什么？
+
+不是只有一句“你输了”。
+
+系统会生成一份 **After Action Review / 赛后复盘报告**，包括：
+
+- 存活天数
+- 最终综合分
+- 日均准确率
+- 放行 / 拒绝 / 搜查 / 隔离比例
+- 前期 / 中期 / 后期策略变化
+- 搜查依赖程度
+- 强制执法倾向
+- 高放行倾向
+- 抽样误拒情况
+- 抽样危险目标漏放情况
+- 每天资源变化
+- 失败原因
+- 模型决策风格标签
+- 做得好的地方
+- 主要风险
+- 策略漂移分析
+- 可导出的机器可读 JSON
+- 日结后解锁的全量正确答案审计（运行过程中绝不提供给 AI）
+- 全量误拒 / 误隔离率
+- 全量危险目标漏放率
+- 搜查后准确率 vs 未搜查准确率
+- 拒绝命中率 / 隔离命中率
+
+例如未来可能形成这样的描述：
+
+> **GPT-5.6 Pro：**
+> 中期证据核验能力强，会主动用搜查换信息；当民意逼近危险线时会明显提高风险容忍，后期放行比例上升。优点是能主动适应资源变化，风险是在多指标同时接近边界时容易发生策略摆动。
+
+随着样本量增加，这些描述会从“单局观察”逐渐变成“模型长期画像”。
+
+---
+
+## 模型长期画像
+
+排行榜不是这个项目最终的重点。
+
+更重要的是长期收集后可以回答：
+
+- 这个模型是不是天然偏保守？
+- 它是不是特别喜欢搜查？
+- 它是否容易误拒正常人？
+- 它会不会在安全压力变大后过度隔离？
+- 它是否会为了经济/民意而漏放危险目标？
+- 它在前 5 天很强，但后期是否会决策漂移？
+- 它是否真正会根据日结反馈修正策略？
+- 同一个模型跑 100 局以后，行为是否稳定？
+
+因此每个模型最终都可以拥有自己的“运行报告档案”。
+
+排行榜中的模型名称可以直接点进去查看 **模型决策档案（Model Dossier）**：累计样本、最好存活、最高分、平均分、平均准确率、常见策略标签、优势、风险以及历史运行记录。
+
+---
+
+## 普通 Chat AI 怎么玩？
+
+不需要 Codex。
+
+不需要电脑控制。
+
+不需要 API Key。
+
+打开：
+
+**https://sstxww.github.io/blackgate-ai-game/chat.html**
+
+输入模型名称，例如：
+
+```text
+GPT-5.6 Pro
+Jev
+Claude
+Gemini
+Grok
+```
+
+然后：
+
+1. 新开一局；
+2. 点「复制完整包」；
+3. 粘到普通聊天 AI；
+4. AI 回复一个动作；
+5. 粘回网页；
+6. 网页自动执行；
+7. 继续下一回合；
+8. 游戏结束后自动生成复盘报告。
+
+AI 推荐回复：
 
 ```text
 ACTION: search
-REASON: 证件与同行关系存在独立矛盾，值得花一张搜查令确认。
+REASON: 当前存在两类独立疑点，值得使用搜查令确认。
 ```
 
-Or use the low-token mode:
+也可以极速模式：
 
 ```text
-S
+A = allow
+R = reject
+S = search
+I = isolate
+N = next_day
 ```
 
-Supported short actions:
+---
 
-| Reply | Action |
+## 人类也可以挑战
+
+打开：
+
+**https://sstxww.github.io/blackgate-ai-game/play.html**
+
+人类完成一局以后也会生成同样的复盘报告，并进入本机排行榜。
+
+这样以后可以研究一个很有意思的问题：
+
+> **人类和不同 AI 的长期决策风格有什么差别？**
+
+---
+
+## 赛后复盘为什么重要？
+
+因为一个模型最后得 80 分，另一个得 75 分，并不能告诉我们它们哪里不同。
+
+但复盘可以告诉我们：
+
+- A 模型是因为过度保守少了 5 分；
+- B 模型是因为漏放高危目标少了 5 分；
+- C 模型前期最好，但 Day 10 后开始策略漂移；
+- D 模型准确率不是最高，却最会维持四项资源平衡。
+
+这才是 Blackgate 真正想收集的数据。
+
+---
+
+## 公平测试原则
+
+正式比较模型时：
+
+- 模型只能看到当前玩家可见状态；
+- 不允许读取源码；
+- 不允许读取 hidden state；
+- 不允许读取 ideal action；
+- 不允许读取 localStorage；
+- 不允许使用 DevTools 偷看真实身份；
+- 搜查结果只有真的选择搜查以后才能看到。
+
+未来固定 Benchmark 会统一：
+
+- 游戏版本
+- 难度
+- 随机种子
+- 案件集合
+- 开局提示词
+- 最大上下文策略
+- 是否允许外部记忆
+
+---
+
+## 数据分层
+
+所有排行榜数据都应该带来源标签：
+
+| 类型 | 含义 |
 |---|---|
-| `A` | allow / 放行 |
-| `R` | reject / 拒绝 |
-| `S` | search / 搜查 |
-| `I` | isolate / 隔离 |
-| `N` | next_day / 下一天 |
+| observed | 项目实际观察记录 |
+| community-self-reported | 社区用户自己提交 |
+| fixed-seed-verified | 固定种子验证运行 |
+| tournament | 官方多模型批量赛 |
 
-The complete starter prompts are in **[PROMPTS.md](./PROMPTS.md)**.
-
----
-
-## 🧠 Copy-paste starter prompt
-
-If you do not want to read any docs, paste this into a new AI chat:
-
-```text
-你正在玩《地下城安全审查员 / Blackgate AI Game》。
-
-目标：尽可能完成 14 天任期，同时维持城库、治安、经济、民意，并控制渗透警戒。
-
-你只能根据我每回合提供的玩家可见信息判断，不得索要源码、隐藏身份、正确答案、ideal action、localStorage 或 DevTools 信息。
-
-操作：
-allow=放行
-reject=拒绝
-search=搜查（不会结束案件）
-isolate=隔离
-next_day=进入下一天
-
-判断原则：
-1. 先读当天审查令，它会改变证据权重。
-2. 单一异常不是铁证，优先寻找两类以上互相印证的证据。
-3. 搜查令和隔离位有限。
-4. 误拒/误隔离会伤害经济与民意。
-5. 漏放危险目标会伤害治安并提高警戒。
-6. 你负责的是14天长期生存，不只是单案准确率。
-
-每回合只回复：
-ACTION: allow|reject|search|isolate|next_day
-REASON: 不超过两句话
-
-不要给多个候选动作，不要假设没有提供的信息。
-```
-
-Then use the **Chat Mode** page to copy each visible game state.
+这样不会把“随手跑的一局”和“严格基准测试”混在一起。
 
 ---
 
-## 🎮 Human mode
+## 项目路线
 
-For a human run **with automatic local recording and a post-game report**:
+下一阶段重点：
 
-### 👉 https://sstxww.github.io/blackgate-ai-game/play.html
+- 固定随机种子
+- 完整 Replay
+- 自动全量混淆矩阵
+- 100 局批量测试
+- 模型长期画像
+- 模型版本对比
+- Token / 延迟 / 成本统计
+- AI vs AI Tournament
+- AI vs Human
+- 在线公开验证榜
 
-The untouched original human UI is also available at:
-
-https://sstxww.github.io/blackgate-ai-game/
-
-The gameplay files are intentionally kept separate from AI tooling:
-
-```text
-index.html
-game.js
-data.js
-styles.css
-rules.css
-rules.js
-```
-
-AI support is added beside them.
+详细见 [ROADMAP.md](./ROADMAP.md)。
 
 ---
 
-## 🤖 Agent / JSON API mode
+## 一句话
 
-For model harnesses, benchmarks, and automated tournaments:
-
-```bash
-git clone https://github.com/sstxww/blackgate-ai-game.git
-cd blackgate-ai-game
-npm install
-npx playwright install chromium
-npm start
-```
-
-Then:
-
-```bash
-curl http://127.0.0.1:8787/api/state
-```
-
-Submit an action:
-
-```bash
-curl -X POST http://127.0.0.1:8787/api/action \
-  -H "content-type: application/json" \
-  -d '{"action":"search"}'
-```
-
-Start a fresh run:
-
-```bash
-curl -X POST http://127.0.0.1:8787/api/new \
-  -H "content-type: application/json" \
-  -d '{"difficulty":"normal"}'
-```
-
-Available actions:
-
-```text
-allow
-reject
-search
-isolate
-next_day
-```
-
-Full protocol: **[AI_SPEC.md](./AI_SPEC.md)**
-
----
-
-## Browser JS API
-
-If your agent already owns a browser, open `/ai/agent.html`:
-
-```js
-await window.BlackgateAI.waitForReady();
-
-const state = window.BlackgateAI.getState();
-
-await window.BlackgateAI.act("search");
-await window.BlackgateAI.act("allow");
-```
-
-Reset:
-
-```js
-await window.BlackgateAI.reset("normal", true);
-```
-
----
-
-## What the AI actually has to solve
-
-This is not a simple classification task.
-
-Every day the model must balance:
-
-- **城库 / Gold**
-- **治安 / Security**
-- **经济 / Economy**
-- **民意 / Public opinion**
-- **渗透警戒 / Threat**
-- limited **search warrants**
-- limited **isolation slots**
-
-Possible visitors include ordinary travelers, merchants, forged-document users, smugglers, wanted suspects, spies, deserters, cult members, disguised monsters, infected travelers, and dangerous curse carriers.
-
-Evidence is intentionally noisy. A suspicious document can belong to an innocent traveler. A clean document can belong to a monster.
-
-Actions also have delayed consequences, so a locally “good” decision may damage the city several turns later.
-
----
-
-## Fair benchmark rules
-
-If you want to compare models rather than browser automation skill:
-
-**Give the model only the visible-state packet.**
-
-Do **not** give a scored model access to:
-
-- repository source;
-- browser DevTools;
-- page-evaluate;
-- localStorage;
-- hidden game state;
-- internal archetype / ideal action;
-- unearned search results.
-
-Recommended reporting:
-
-```text
-Model:
-Model version:
-Prompt:
-Difficulty:
-Seed / case pack:
-Runs:
-Completion rate:
-Mean final score:
-Decision accuracy:
-Dangerous false-negative rate:
-Innocent false-positive rate:
-Search efficiency:
-Isolation precision:
-Mean latency:
-Token / cost:
-```
-
-Reproducible fixed-seed benchmark packs are on the **[roadmap](./ROADMAP.md)**.
-
----
-
-## Repository map
-
-```text
-.
-├─ index.html              # original human game
-├─ game.js                 # original gameplay
-├─ data.js                 # original game data
-├─ styles.css
-├─ rules.css
-├─ rules.js
-│
-├─ chat.html               # universal ChatGPT/Claude/Gemini relay UI
-├─ chat.js
-├─ chat.css
-│
-├─ ai/
-│  ├─ agent.html           # browser agent entry
-│  └─ adapter.js           # visible DOM → safe AI state
-│
-├─ runner/
-│  └─ server.mjs           # local JSON HTTP API
-│
-├─ examples/
-│  └─ minimal-agent.mjs
-│
-├─ AI_SPEC.md
-├─ PROMPTS.md
-├─ ROADMAP.md
-└─ CONTRIBUTING.md
-```
-
----
-
-## Design principles
-
-### Same game
-AI access should not quietly change the game the human player receives.
-
-### No answer leakage
-The public AI state must not expose hidden identity, ideal action, internal danger score, or search evidence that has not been earned.
-
-### Chat-first
-A person with only a normal AI chat window should still be able to let the model play.
-
-### Benchmarkable
-Long-term goal: deterministic case packs, replays, scorecards, and model-vs-model tournaments.
-
----
-
-## Roadmap
-
-- ✅ Human game
-- ✅ Browser AI adapter
-- ✅ JSON API
-- ✅ ChatGPT / Claude / Gemini relay mode
-- ✅ GitHub Pages online play
-- ⏳ Fixed-seed benchmark packs
-- ⏳ Replay export
-- ⏳ Multi-model tournament runner
-- ⏳ Community leaderboard
-
-See **[ROADMAP.md](./ROADMAP.md)**.
-
----
-
-## Contributing
-
-Ideas, model adapters, benchmark tooling, translations, and evaluation work are welcome.
-
-See **[CONTRIBUTING.md](./CONTRIBUTING.md)** or open an issue.
-
----
-
-## License
-
-MIT — see [LICENSE](./LICENSE).
-
-<p align="center"><b>If your model survives all 14 days, open an issue with the run.</b></p>
+**Blackgate 想测的不是“AI 会不会点按钮”，而是：当信息不完整、资源有限、后果延迟，而且要连续做几百次决策时，这个模型到底会怎么想。**

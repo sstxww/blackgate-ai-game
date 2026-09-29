@@ -1,4 +1,37 @@
-# Blackgate AI Game · 地下城安全审查员
+<p align="center">
+  <img src="./assets/hero.svg" alt="Blackgate AI Game" width="100%" />
+</p>
+
+<h1 align="center">Blackgate AI Game · 地下城安全审查员</h1>
+
+<p align="center">
+  <b>专门测试 AI 推理、证据判断、资源管理和长期决策能力的游戏型 Benchmark</b>
+</p>
+
+<p align="center">
+  <a href="./README.md"><b>🇨🇳 简体中文</b></a>
+  ·
+  <a href="./README.en.md"><b>🇺🇸 English</b></a>
+</p>
+
+<p align="center">
+  <a href="https://sstxww.github.io/blackgate-ai-game/play.html"><b>🎮 在线挑战 + 自动复盘</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 让聊天 AI 玩</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 AI 排行榜</b></a>
+  ·
+  <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 赛后复盘</b></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/sstxww/blackgate-ai-game?style=social" alt="GitHub stars" />
+  <img src="https://img.shields.io/github/license/sstxww/blackgate-ai-game" alt="license" />
+  <img src="https://img.shields.io/badge/Benchmark-长期决策-d7b46a" alt="benchmark" />
+  <img src="https://img.shields.io/badge/Codex-不需要-4c9f70" alt="Codex not required" />
+</p>
+
+---
 
 > **这是一个用于测试 AI 推理与长期决策能力的游戏型 Benchmark。**
 >
