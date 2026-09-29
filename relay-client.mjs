@@ -62,13 +62,14 @@ const delay=(ms,signal)=>new Promise((resolve,reject)=>{
   signal?.addEventListener('abort',abort,{once:true});
 });
 export class RelayClient {
-  #key; #config; #gateway; #publicGateway; #activeGateway; #gatewayType; #fetch;
-  constructor({url,key,protocol='auto',gateway='',publicGateway='',fetchImpl=globalThis.fetch}) {
+  #key; #config; #gateway; #publicGateway; #activeGateway; #gatewayType; #preferPublic; #fetch;
+  constructor({url,key,protocol='auto',gateway='',publicGateway='',preferPublic=false,fetchImpl=globalThis.fetch}) {
     this.#config=endpoint(url,protocol);
     this.#gateway=gatewayEndpoint(gateway);
     this.#publicGateway=gatewayEndpoint(publicGateway);
-    this.#activeGateway=this.#gateway;
-    this.#gatewayType=this.#gateway?'gateway':'direct';
+    this.#preferPublic=!!preferPublic;
+    this.#activeGateway=this.#gateway||(this.#preferPublic?this.#publicGateway:'');
+    this.#gatewayType=this.#gateway?'gateway':this.#activeGateway?'public-gateway':'direct';
     this.#key=String(key||'').trim();
     this.#fetch=fetchImpl.bind(globalThis);
     if(!this.#key && !/https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::|\/)/.test(this.#config.base)) throw Error('请输入 API Key');
@@ -144,7 +145,16 @@ export class RelayClient {
       if(!ids.length)throw Error('接口未返回可用模型，请展开“连接帮助”填写模型 ID。');
       return ids;
     }catch(e){
-      if(e?.code==='DIRECT_CONNECT_FAILED'&&this.#publicGateway&&!this.#activeGateway){
+      // Public site prefers the shared gateway so first-time users never need a failed CORS attempt.
+      // If the shared gateway itself is unreachable at the browser/network layer, model discovery
+      // may safely try direct once because GET /models is non-mutating. Generation requests are
+      // never replayed across transports.
+      if(e?.code==='GATEWAY_CONNECT_FAILED'&&this.#gatewayType==='public-gateway'){
+        this.#activeGateway='';
+        this.#gatewayType='direct';
+        return this.models(signal);
+      }
+      if(e?.code==='DIRECT_CONNECT_FAILED'&&this.#publicGateway&&!this.#activeGateway&&!this.#preferPublic){
         this.#activeGateway=this.#publicGateway;
         this.#gatewayType='public-gateway';
         return this.models(signal);
