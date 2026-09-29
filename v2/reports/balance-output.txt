@@ -1,0 +1,218 @@
+1/72 dev-balance-0 allow: days=16, score=47.8367, completed=false
+2/72 dev-balance-0 reject: days=23, score=44.4605, completed=false
+3/72 dev-balance-0 isolate: days=12, score=47.8468, completed=false
+4/72 dev-balance-0 paperwork: days=19, score=50.5504, completed=false
+5/72 dev-balance-0 any-anomaly: days=39, score=63.044, completed=false
+6/72 dev-balance-0 any-anomaly-reactive: days=42, score=64.7535, completed=true
+7/72 dev-balance-0 evidence: days=42, score=71.5348, completed=true
+8/72 dev-balance-0 memory: days=42, score=73.2267, completed=true
+9/72 dev-balance-0 oracle: days=42, score=95.227, completed=true
+10/72 dev-balance-1 allow: days=12, score=45.2385, completed=false
+11/72 dev-balance-1 reject: days=23, score=45.6025, completed=false
+12/72 dev-balance-1 isolate: days=12, score=48.3284, completed=false
+13/72 dev-balance-1 paperwork: days=17, score=50.4663, completed=false
+14/72 dev-balance-1 any-anomaly: days=30, score=57.2296, completed=false
+15/72 dev-balance-1 any-anomaly-reactive: days=33, score=55.5363, completed=false
+16/72 dev-balance-1 evidence: days=31, score=61.5671, completed=false
+17/72 dev-balance-1 memory: days=33, score=63.1987, completed=false
+18/72 dev-balance-1 oracle: days=42, score=94.4137, completed=true
+19/72 dev-balance-2 allow: days=11, score=43.0603, completed=false
+20/72 dev-balance-2 reject: days=23, score=45.632, completed=false
+21/72 dev-balance-2 isolate: days=12, score=48.5041, completed=false
+22/72 dev-balance-2 paperwork: days=16, score=49.8757, completed=false
+23/72 dev-balance-2 any-anomaly: days=21, score=47.3271, completed=false
+24/72 dev-balance-2 any-anomaly-reactive: days=24, score=46.3007, completed=false
+25/72 dev-balance-2 evidence: days=23, score=50.9461, completed=false
+26/72 dev-balance-2 memory: days=24, score=52.911, completed=false
+27/72 dev-balance-2 oracle: days=42, score=93.6594, completed=true
+28/72 dev-balance-3 allow: days=15, score=48.0096, completed=false
+29/72 dev-balance-3 reject: days=24, score=45.1795, completed=false
+30/72 dev-balance-3 isolate: days=12, score=47.9854, completed=false
+31/72 dev-balance-3 paperwork: days=18, score=48.5357, completed=false
+32/72 dev-balance-3 any-anomaly: days=26, score=53.9776, completed=false
+33/72 dev-balance-3 any-anomaly-reactive: days=30, score=51.3115, completed=false
+34/72 dev-balance-3 evidence: days=28, score=56.9815, completed=false
+35/72 dev-balance-3 memory: days=28, score=58.8359, completed=false
+36/72 dev-balance-3 oracle: days=42, score=94.3642, completed=true
+37/72 dev-balance-4 allow: days=15, score=46.7382, completed=false
+38/72 dev-balance-4 reject: days=24, score=45.0598, completed=false
+39/72 dev-balance-4 isolate: days=12, score=47.7635, completed=false
+40/72 dev-balance-4 paperwork: days=20, score=48.8478, completed=false
+41/72 dev-balance-4 any-anomaly: days=30, score=52.6897, completed=false
+42/72 dev-balance-4 any-anomaly-reactive: days=33, score=50.837, completed=false
+43/72 dev-balance-4 evidence: days=31, score=57.9883, completed=false
+44/72 dev-balance-4 memory: days=33, score=60.2962, completed=false
+45/72 dev-balance-4 oracle: days=42, score=94.8127, completed=true
+46/72 dev-balance-5 allow: days=12, score=44.8214, completed=false
+47/72 dev-balance-5 reject: days=24, score=45.0052, completed=false
+48/72 dev-balance-5 isolate: days=12, score=48.1618, completed=false
+49/72 dev-balance-5 paperwork: days=20, score=55.0931, completed=false
+50/72 dev-balance-5 any-anomaly: days=38, score=61.6719, completed=false
+51/72 dev-balance-5 any-anomaly-reactive: days=39, score=62.3969, completed=false
+52/72 dev-balance-5 evidence: days=39, score=67.7139, completed=false
+53/72 dev-balance-5 memory: days=39, score=68.2948, completed=false
+54/72 dev-balance-5 oracle: days=42, score=95.9097, completed=true
+55/72 dev-balance-6 allow: days=13, score=46.634, completed=false
+56/72 dev-balance-6 reject: days=23, score=44.6195, completed=false
+57/72 dev-balance-6 isolate: days=12, score=47.949, completed=false
+58/72 dev-balance-6 paperwork: days=18, score=48.802, completed=false
+59/72 dev-balance-6 any-anomaly: days=36, score=59.3794, completed=false
+60/72 dev-balance-6 any-anomaly-reactive: days=39, score=58.5527, completed=false
+61/72 dev-balance-6 evidence: days=34, score=62.0831, completed=false
+62/72 dev-balance-6 memory: days=35, score=62.3527, completed=false
+63/72 dev-balance-6 oracle: days=42, score=94.1788, completed=true
+64/72 dev-balance-7 allow: days=15, score=46.9192, completed=false
+65/72 dev-balance-7 reject: days=23, score=45.0045, completed=false
+66/72 dev-balance-7 isolate: days=12, score=47.8923, completed=false
+67/72 dev-balance-7 paperwork: days=22, score=51.8009, completed=false
+68/72 dev-balance-7 any-anomaly: days=34, score=57.6259, completed=false
+69/72 dev-balance-7 any-anomaly-reactive: days=37, score=58.5108, completed=false
+70/72 dev-balance-7 evidence: days=31, score=59.1721, completed=false
+71/72 dev-balance-7 memory: days=42, score=65.4896, completed=false
+72/72 dev-balance-7 oracle: days=42, score=95.2308, completed=true
+[
+  {
+    "policy": "allow",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 0,
+    "completion_95pct_wilson": [
+      0,
+      32.4
+    ],
+    "mean_days": 13.63,
+    "min_days": 11,
+    "max_days": 16,
+    "mean_score": 46.16,
+    "mean_miss_rate": 100,
+    "mean_innocent_coercion_rate": 0
+  },
+  {
+    "policy": "reject",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 0,
+    "completion_95pct_wilson": [
+      0,
+      32.4
+    ],
+    "mean_days": 23.38,
+    "min_days": 23,
+    "max_days": 24,
+    "mean_score": 45.07,
+    "mean_miss_rate": 0,
+    "mean_innocent_coercion_rate": 100
+  },
+  {
+    "policy": "isolate",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 0,
+    "completion_95pct_wilson": [
+      0,
+      32.4
+    ],
+    "mean_days": 12,
+    "min_days": 12,
+    "max_days": 12,
+    "mean_score": 48.05,
+    "mean_miss_rate": 0,
+    "mean_innocent_coercion_rate": 100
+  },
+  {
+    "policy": "paperwork",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 0,
+    "completion_95pct_wilson": [
+      0,
+      32.4
+    ],
+    "mean_days": 18.75,
+    "min_days": 16,
+    "max_days": 22,
+    "mean_score": 50.5,
+    "mean_miss_rate": 65.66,
+    "mean_innocent_coercion_rate": 22.47
+  },
+  {
+    "policy": "any-anomaly",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 0,
+    "completion_95pct_wilson": [
+      0,
+      32.4
+    ],
+    "mean_days": 31.75,
+    "min_days": 21,
+    "max_days": 39,
+    "mean_score": 56.62,
+    "mean_miss_rate": 23.14,
+    "mean_innocent_coercion_rate": 47.12
+  },
+  {
+    "policy": "any-anomaly-reactive",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 1,
+    "completion_95pct_wilson": [
+      2.2,
+      47.1
+    ],
+    "mean_days": 34.63,
+    "min_days": 24,
+    "max_days": 42,
+    "mean_score": 56.02,
+    "mean_miss_rate": 23.76,
+    "mean_innocent_coercion_rate": 47.22
+  },
+  {
+    "policy": "evidence",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 1,
+    "completion_95pct_wilson": [
+      2.2,
+      47.1
+    ],
+    "mean_days": 32.38,
+    "min_days": 23,
+    "max_days": 42,
+    "mean_score": 61,
+    "mean_miss_rate": 31.7,
+    "mean_innocent_coercion_rate": 27.33
+  },
+  {
+    "policy": "memory",
+    "privileged_control": false,
+    "n": 8,
+    "completed": 1,
+    "completion_95pct_wilson": [
+      2.2,
+      47.1
+    ],
+    "mean_days": 34.5,
+    "min_days": 24,
+    "max_days": 42,
+    "mean_score": 63.08,
+    "mean_miss_rate": 26.74,
+    "mean_innocent_coercion_rate": 27.51
+  },
+  {
+    "policy": "oracle",
+    "privileged_control": true,
+    "n": 8,
+    "completed": 8,
+    "completion_95pct_wilson": [
+      67.6,
+      100
+    ],
+    "mean_days": 42,
+    "min_days": 42,
+    "max_days": 42,
+    "mean_score": 94.72,
+    "mean_miss_rate": 0,
+    "mean_innocent_coercion_rate": 0
+  }
+]

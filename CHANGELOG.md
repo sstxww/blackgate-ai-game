@@ -1,3 +1,13 @@
+# v2.0.0 — Blackgate II (2026-09-29)
+
+- Add a separate 42-day / 525-decision campaign, seeded persistent graph, ambiguous evidence, six costly investigations, eight policies, bounded adversary adaptation and terminal liability settlement.
+- Add independent Node referee, isolated public observations, restartable sessions, idempotent actions, signed post-game reports, exact replay and separate version/difficulty leaderboards.
+- Add Chinese desktop/mobile UI, ordinary-chat relay, public archive, JSON/Markdown postmortems and honest practice-mode labeling.
+- Include eight checksummed public development worlds, 72 calibration runs, passing engine/API regression and actual browser smoke evidence. No real-model v2 rankings are claimed.
+- Preserve classic gameplay files; retain classic documentation and add visible v2 navigation. Protect private referee storage from both v2 and the legacy static server. Deploy only tracked public files after regression tests.
+
+---
+
 # Changelog
 
 ## v1.1.0 — 2026-09-29

@@ -3,3 +3,8 @@ playwright-report/
 test-results/
 .DS_Store
 Thumbs.db
+
+# Local referee secrets and active sessions: NEVER publish or commit
+.blackgate-v2/
+v2/tests/.scratch/
+.site/

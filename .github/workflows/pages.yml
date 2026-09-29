@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+name: Test and deploy GitHub Pages
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
@@ -23,12 +23,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Syntax and deterministic referee regression
+        run: |
+          node scripts/check.mjs
+          node --test --test-concurrency=1 v2/tests/*.test.mjs
+      - name: Prepare tracked public files only
+        run: node scripts/prepare-pages.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: .site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

@@ -87,6 +87,10 @@ async function ensureSession() {
 async function serveStatic(req, res, pathname) {
   let relative = decodeURIComponent(pathname);
   if (relative === "/") relative = "/ai/agent.html";
+  if (relative.split(/[\\/]/).some(segment => segment.startsWith('.'))) {
+    res.writeHead(403);
+    return res.end('Forbidden');
+  }
   const target = path.resolve(root, "." + relative);
   if (target !== root && !target.startsWith(root + path.sep)) {
     res.writeHead(403);

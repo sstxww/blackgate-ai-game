@@ -1,3 +1,11 @@
+# v2 protocol
+
+The new independent referee uses **blackgate-world/2**, port 8788 and revisioned JSON actions. See [v2 Chinese API manual](./v2/README.md#api-与重放) and [fairness boundary](./v2/FAIRNESS.md). It is not a drop-in replacement for the classic DOM adapter below.
+
+Run classic tools with `npm run start:classic` (port 8787). The following retained specification describes **classic v1 only**.
+
+---
+
 # Blackgate AI Interface v1
 
 This repository keeps the original game files unchanged and adds an external AI-facing adapter.

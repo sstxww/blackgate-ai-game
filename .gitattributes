@@ -1,0 +1,6 @@
+v2/** text eol=lf
+scripts/*.mjs text eol=lf
+*.jsonl text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary

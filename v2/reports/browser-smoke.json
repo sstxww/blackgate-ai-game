@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-09-29T09:09:24.670Z",
+  "browser": "153.0.8010.12",
+  "results": [
+    {
+      "mode": "server",
+      "passed": true,
+      "checks": [
+        "new campaign",
+        "paid investigation",
+        "public chat packet",
+        "stale JSON rejected",
+        "valid chat action",
+        "archive search",
+        "reload/resume",
+        "policy council",
+        "day transition",
+        "390px overflow",
+        "desktop/mobile screenshots",
+        "finished report UI",
+        "separate leaderboard",
+        "JSON and Markdown export"
+      ],
+      "page_errors": []
+    },
+    {
+      "mode": "practice",
+      "passed": true,
+      "checks": [
+        "new campaign",
+        "paid investigation",
+        "public chat packet",
+        "stale JSON rejected",
+        "valid chat action",
+        "archive search",
+        "reload/resume",
+        "policy council",
+        "day transition",
+        "390px overflow",
+        "desktop/mobile screenshots"
+      ],
+      "page_errors": []
+    }
+  ]
+}

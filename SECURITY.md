@@ -1,3 +1,11 @@
+# v2 referee security
+
+Read [v2/FAIRNESS.md](./v2/FAIRNESS.md) before hosting. Never expose or commit `.blackgate-v2`; it holds private seeds and signing material. The default referee is loopback-only. A tested agent with filesystem access to the referee can bypass HTTP observation isolation. Run trusted referee and untrusted player in separate permission domains.
+
+GitHub Pages is client-side practice, not a trusted referee. Deterministic replay and a server signature do not by themselves authenticate a model's identity or prove that no answers were inspected.
+
+---
+
 # Security
 
 This is a local/static game and benchmark project.

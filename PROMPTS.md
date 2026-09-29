@@ -1,3 +1,11 @@
+# v2 开局方式
+
+新版直接打开 [42 天聊天接力](https://sstxww.github.io/blackgate-ai-game/v2/#chat)。网页生成完整公开规则、当前 revision、可用动作与证据。让 AI 只返回一个 JSON 动作，禁止读取源码、存档、种子或其他运行答案。理由仅为自愿公开的简短决策摘要。
+
+完整协议与示例见 [v2 中文说明](./v2/README.md)。下面保留的提示词用于 **经典版 v1**，不要与 v2 的调查/政策/revision 协议混用。
+
+---
+
 # Prompts for ChatGPT / Claude / Gemini / Grok
 
 You do **not** need Codex, Computer Use, a coding agent, or an API key to play.

@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0",
+  "content_version": "world-2026-09-29.1",
+  "purpose": "Public development examples, NOT held-out evaluation seeds. Generated entities are not hand-authored independent questions.",
+  "worlds": 8,
+  "people": 8192,
+  "networks": 1024,
+  "edges": 18432,
+  "bytes": 6820515,
+  "authored_evidence_phrasings": 48,
+  "authored_motivations": 12,
+  "files": [
+    {
+      "file": "development-00.jsonl",
+      "sha256": "b990902b6b7ca1eafc8bd2f84295b87b30490a8ae065ff6b6ccc610770103d26",
+      "bytes": 852943,
+      "records": 3463
+    },
+    {
+      "file": "development-01.jsonl",
+      "sha256": "885524fc4adae9d5be22224720ec457f01841ad8b7bb91aa8a9c37f5f653675e",
+      "bytes": 852672,
+      "records": 3463
+    },
+    {
+      "file": "development-02.jsonl",
+      "sha256": "171e18b4d3e3837adbdb638ecbf8d86cdccf9f432878ff30036f0b2fd6107eec",
+      "bytes": 852843,
+      "records": 3463
+    },
+    {
+      "file": "development-03.jsonl",
+      "sha256": "b74726fda0bfd5ce4c476f5fa38ec92cbe04011e4998ffac5cbbd5d2647c0ba3",
+      "bytes": 851829,
+      "records": 3463
+    },
+    {
+      "file": "development-04.jsonl",
+      "sha256": "1e211dbd4d8224f95b33a1a58435fdfd15391eed6334fcf8ea740c822858ff51",
+      "bytes": 852365,
+      "records": 3463
+    },
+    {
+      "file": "development-05.jsonl",
+      "sha256": "f2be6b6063f04f3894baccd0e2cdfd414b5db6c0e008f7e51896539245590c09",
+      "bytes": 852602,
+      "records": 3463
+    },
+    {
+      "file": "development-06.jsonl",
+      "sha256": "796d1ddf492e4316ce61191494dd32cc39c6fdba9e38c152f74b6ec008812280",
+      "bytes": 852080,
+      "records": 3463
+    },
+    {
+      "file": "development-07.jsonl",
+      "sha256": "cb9532ec8bb6bcb130680140f4ceee272f79e19197c18a1d5a79c94c02ec3d04",
+      "bytes": 853181,
+      "records": 3463
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+server browser smoke passed
+practice browser smoke passed

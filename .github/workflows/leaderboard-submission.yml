@@ -45,12 +45,14 @@ jobs:
             git commit -m "Record community run #${{ github.event.issue.number }}"
             git push
           fi
+      - name: Prepare tracked public files only
+        run: node scripts/prepare-pages.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: .site
       - name: Deploy updated leaderboard
         id: deployment
         uses: actions/deploy-pages@v4

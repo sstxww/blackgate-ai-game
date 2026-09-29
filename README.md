@@ -1,310 +1,115 @@
-<p align="center">
-  <img src="./assets/hero.svg" alt="Blackgate AI Game" width="100%" />
-</p>
+<p align="center"><img src="./v2/reports/practice-desktop.png" alt="Blackgate II：长程决策竞技场" width="100%" /></p>
 
-<h1 align="center">Blackgate AI Game · 地下城安全审查员</h1>
+<h1 align="center">Blackgate II · 地下城安全审查员</h1>
+<p align="center"><b>42 天 · 不完全信息 · 会适应你的对手 · 必须偿还的长期后果</b></p>
+<p align="center"><a href="./README.md">简体中文</a> · <a href="./README.en.md">English</a></p>
+<p align="center"><a href="https://sstxww.github.io/blackgate-ai-game/v2/"><b>🎮 新版在线挑战</b></a> · <a href="https://sstxww.github.io/blackgate-ai-game/v2/#chat"><b>💬 普通聊天 AI 接力</b></a> · <a href="./v2/README.md"><b>📖 完整中文规则</b></a> · <a href="./v2/reports/BALANCE.md"><b>🧪 实测证据</b></a></p>
+<p align="center"><img src="https://img.shields.io/github/stars/sstxww/blackgate-ai-game?style=social" alt="GitHub stars" /> <img src="https://img.shields.io/badge/version-2.0.0-d0b779" alt="version" /> <img src="https://img.shields.io/badge/license-MIT-8dcbb0" alt="license" /></p>
 
-<p align="center">
-  <b>专门测试 AI 推理、证据判断、资源管理和长期决策能力的游戏型 Benchmark</b>
-</p>
-
-<p align="center">
-  <a href="./README.md"><b>🇨🇳 简体中文</b></a>
-  ·
-  <a href="./README.en.md"><b>🇺🇸 English</b></a>
-</p>
-
-<p align="center">
-  <a href="https://sstxww.github.io/blackgate-ai-game/play.html"><b>🎮 在线挑战 + 自动复盘</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 让聊天 AI 玩</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 AI 排行榜</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 赛后复盘</b></a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/github/stars/sstxww/blackgate-ai-game?style=social" alt="GitHub stars" />
-  <img src="https://img.shields.io/github/license/sstxww/blackgate-ai-game" alt="license" />
-  <img src="https://img.shields.io/badge/Benchmark-长期决策-d7b46a" alt="benchmark" />
-  <img src="https://img.shields.io/badge/Codex-不需要-4c9f70" alt="Codex not required" />
-</p>
-
----
-
-> **这是一个用于测试 AI 推理与长期决策能力的游戏型 Benchmark。**
+> **守住一扇门不难。守住一座仍然值得生活的城市，才是考验。**
 >
-> 它不只看 AI 会不会判断一个 NPC，而是观察模型在 **14 天连续决策、有限资源、不完全信息、延迟后果** 下，如何权衡安全、经济、民意与风险。
+> 你每天只掌握有限证据，必须决定谁能进入、谁需要调查、何时值得花费资源，以及哪项政策能让城市撑过下一场危机。世界会记住你的决定，但不会在你落子之后改写答案。
 
-<p align="center">
-  <a href="https://sstxww.github.io/blackgate-ai-game/"><b>🎮 在线玩</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/chat.html"><b>💬 让 ChatGPT / Claude / Gemini / Jev 玩</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/leaderboard.html"><b>🏆 排行榜</b></a>
-  ·
-  <a href="https://sstxww.github.io/blackgate-ai-game/report.html"><b>📊 赛后复盘</b></a>
-</p>
+## 这次不是给旧版简单加关
 
----
+新版从经典版 14 天延展为 **42 天动态任期**。每天 10～15 名入境者，完整任期 525 次入境决策。难度来自证据冲突、跨日关系、有限调查预算、延迟因果、对手适应和多资源权衡，而不是无限增加阅读量。
 
-## 这个项目到底测什么？
-
-Blackgate 不把“模型答对一道题”当成最终目标。
-
-真正想测的是：
-
-- **证据推理**：能不能区分噪声、弱证据和强证据；
-- **不完全信息决策**：不知道真实身份时是否能做合理判断；
-- **资源管理**：搜查令、隔离位有限，什么时候值得花；
-- **风险控制**：漏放危险目标和误伤正常旅客的代价完全不同；
-- **长期规划**：今天的正确动作可能几天后才体现后果；
-- **策略适应**：模型会不会根据治安、民意、经济、警戒改变策略；
-- **一致性**：跑到后期压力变大后，决策标准是否会漂移；
-- **复盘能力**：一局结束后，能不能解释自己为什么输、偏向什么策略。
-
-所以这个项目更接近：
-
-> **长期决策能力测试 + 事后行为分析**
-
-而不是单纯的“分类准确率”。
-
----
-
-## 排行榜怎么排？
-
-当前分三层：
-
-### 1. 当前实验榜
-
-这是项目早期的真实实验记录，用于快速比较和调试。
-
-目前：
-
-1. **GPT-5.6 Pro**
-2. **Jev**
-
-早期样本不是统一随机种子，因此页面会明确标记为“实验榜”，不会假装是严格科学结论。
-
-### 2. 社区公开榜
-
-任何人完成一局以后，都可以从赛后报告页一键提交。
-
-排序规则：
-
-1. **存活天数**
-2. **最终综合分**
-3. **日均准确率**
-
-社区榜属于 **self-reported / 自报成绩**。
-
-### 3. 固定基准验证榜（规划中）
-
-后续会加入固定种子与统一案件集，让所有模型面对完全一样的局面。
-
-只有这一层才适合做更严格的模型横向比较。
-
----
-
-## 一局结束以后会生成什么？
-
-不是只有一句“你输了”。
-
-系统会生成一份 **After Action Review / 赛后复盘报告**，包括：
-
-- 存活天数
-- 最终综合分
-- 日均准确率
-- 放行 / 拒绝 / 搜查 / 隔离比例
-- 前期 / 中期 / 后期策略变化
-- 搜查依赖程度
-- 强制执法倾向
-- 高放行倾向
-- 抽样误拒情况
-- 抽样危险目标漏放情况
-- 每天资源变化
-- 失败原因
-- 模型决策风格标签
-- 做得好的地方
-- 主要风险
-- 策略漂移分析
-- 可导出的机器可读 JSON
-- 日结后解锁的全量正确答案审计（运行过程中绝不提供给 AI）
-- 全量误拒 / 误隔离率
-- 全量危险目标漏放率
-- 搜查后准确率 vs 未搜查准确率
-- 拒绝命中率 / 隔离命中率
-
-例如未来可能形成这样的描述：
-
-> **GPT-5.6 Pro：**
-> 中期证据核验能力强，会主动用搜查换信息；当民意逼近危险线时会明显提高风险容忍，后期放行比例上升。优点是能主动适应资源变化，风险是在多指标同时接近边界时容易发生策略摆动。
-
-随着样本量增加，这些描述会从“单局观察”逐渐变成“模型长期画像”。
-
----
-
-## 模型长期画像
-
-排行榜不是这个项目最终的重点。
-
-更重要的是长期收集后可以回答：
-
-- 这个模型是不是天然偏保守？
-- 它是不是特别喜欢搜查？
-- 它是否容易误拒正常人？
-- 它会不会在安全压力变大后过度隔离？
-- 它是否会为了经济/民意而漏放危险目标？
-- 它在前 5 天很强，但后期是否会决策漂移？
-- 它是否真正会根据日结反馈修正策略？
-- 同一个模型跑 100 局以后，行为是否稳定？
-
-因此每个模型最终都可以拥有自己的“运行报告档案”。
-
-排行榜中的模型名称可以直接点进去查看 **模型决策档案（Model Dossier）**：累计样本、最好存活、最高分、平均分、平均准确率、常见策略标签、优势、风险以及历史运行记录。
-
----
-
-## 普通 Chat AI 怎么玩？
-
-不需要 Codex。
-
-不需要电脑控制。
-
-不需要 API Key。
-
-打开：
-
-**https://sstxww.github.io/blackgate-ai-game/chat.html**
-
-输入模型名称，例如：
-
-```text
-GPT-5.6 Pro
-Jev
-Claude
-Gemini
-Grok
-```
-
-然后：
-
-1. 新开一局；
-2. 点「复制完整包」；
-3. 粘到普通聊天 AI；
-4. AI 回复一个动作；
-5. 粘回网页；
-6. 网页自动执行；
-7. 继续下一回合；
-8. 游戏结束后自动生成复盘报告。
-
-AI 推荐回复：
-
-```text
-ACTION: search
-REASON: 当前存在两类独立疑点，值得使用搜查令确认。
-```
-
-也可以极速模式：
-
-```text
-A = allow
-R = reject
-S = search
-I = isolate
-N = next_day
-```
-
----
-
-## 人类也可以挑战
-
-打开：
-
-**https://sstxww.github.io/blackgate-ai-game/play.html**
-
-人类完成一局以后也会生成同样的复盘报告，并进入本机排行榜。
-
-这样以后可以研究一个很有意思的问题：
-
-> **人类和不同 AI 的长期决策风格有什么差别？**
-
----
-
-## 赛后复盘为什么重要？
-
-因为一个模型最后得 80 分，另一个得 75 分，并不能告诉我们它们哪里不同。
-
-但复盘可以告诉我们：
-
-- A 模型是因为过度保守少了 5 分；
-- B 模型是因为漏放高危目标少了 5 分；
-- C 模型前期最好，但 Day 10 后开始策略漂移；
-- D 模型准确率不是最高，却最会维持四项资源平衡。
-
-这才是 Blackgate 真正想收集的数据。
-
----
-
-## 公平测试原则
-
-正式比较模型时：
-
-- 模型只能看到当前玩家可见状态；
-- 不允许读取源码；
-- 不允许读取 hidden state；
-- 不允许读取 ideal action；
-- 不允许读取 localStorage；
-- 不允许使用 DevTools 偷看真实身份；
-- 搜查结果只有真的选择搜查以后才能看到。
-
-未来固定 Benchmark 会统一：
-
-- 游戏版本
-- 难度
-- 随机种子
-- 案件集合
-- 开局提示词
-- 最大上下文策略
-- 是否允许外部记忆
-
----
-
-## 数据分层
-
-所有排行榜数据都应该带来源标签：
-
-| 类型 | 含义 |
+| 能力 | 已实现的机制 |
 |---|---|
-| observed | 项目实际观察记录 |
-| community-self-reported | 社区用户自己提交 |
-| fixed-seed-verified | 固定种子验证运行 |
-| tournament | 官方多模型批量赛 |
+| 长期记忆与关系推理 | 每局 1,024 人、128 个网络、2,304 条关系；历史公开档案和城市来信可检索 |
+| 不确定性判断 | 文书差错可能无辜；6 类调查有误报、漏报和相关来源；生物阴性不排除其他威胁 |
+| 信息价值决策 | 每日 8～10 调查点；深检、档案、证人与两日跟踪竞争同一预算 |
+| 策略适应 | 对手只观察滞后的公开执法历史，受最小样本和改装额度约束，不读取理由或概率 |
+| 长期规划 | 8 项政策含当日与三日后效果；供给、危害、网络与危机能相互影响 |
+| 反投机 | 全放/全拒/隔离有系统代价；第 42 天后仍清算已承诺责任 |
+| 可复核复盘 | 公开决策摘要、概率校准、证据引用、逐项后果归因、动作链和确定性重放 |
 
-这样不会把“随手跑的一局”和“严格基准测试”混在一起。
+### 数据不是只有几张固定 NPC 卡
 
----
+仓库附带 **8 个公开开发世界**，合计 **8,192 名人物实例、1,024 个网络、18,432 条关系**，约 6.82 MB JSONL；完整清单和每个文件的 SHA-256 在 [数据 manifest](./v2/data/manifest.json)。
 
-## 项目路线
+另有 16 种事件机制、48 种证据表述、12 种自述背景，以及运行时生成器。**这些是程序生成的关系世界实例，不是假称几千道手写剧情。** 公共实例供开发、审计和测试使用；正式裁判使用新生成的私有种子，不抽取公开答案。
 
-下一阶段重点：
+## 三步让聊天 AI 玩
 
-- 固定随机种子
-- 完整 Replay
-- 自动全量混淆矩阵
-- 100 局批量测试
-- 模型长期画像
-- 模型版本对比
-- Token / 延迟 / 成本统计
-- AI vs AI Tournament
-- AI vs Human
-- 在线公开验证榜
+1. 打开 [新版页面](https://sstxww.github.io/blackgate-ai-game/v2/)，新开一局。
+2. 点击「复制玩家可见状态 + 规则」，发给你的聊天 AI。
+3. 把 AI 回复的动作 JSON 粘回网页执行，继续下一回合。
 
-详细见 [ROADMAP.md](./ROADMAP.md)。
+不用 Codex，不用电脑控制，也不需要把 API Key 填到网页里。页面会生成开局说明、公开状态和协议要求。人类可以直接点击同一套操作。
 
----
+```json
+{
+  "revision": 0,
+  "action": "investigate",
+  "test": "registry",
+  "reason": "先核验文书差异，避免把登记错误直接当作危险身份。"
+}
+```
 
-## 一句话
+`revision` 使用当前状态值；概率字段 `p_threat` 表示该对象有危险意图的概率，非动作自信程度。理由是可公开的简短摘要，不要求私密思维链。
 
-**Blackgate 想测的不是“AI 会不会点按钮”，而是：当信息不完整、资源有限、后果延迟，而且要连续做几百次决策时，这个模型到底会怎么想。**
+## 在线练习 ≠ 服务端验证
+
+| 模式 | 现在可用 | 成绩性质 |
+|---|---|---|
+| GitHub Pages 新版 | 在线人类游戏、聊天接力、恢复、报告导出 | 当前浏览器练习记录；客户端可检查源码，不能防止有权限的玩家偷看 |
+| 独立 Node 裁判 | API、同源 UI、会话隔离、持久恢复、赛后签名、裁判本地共享榜 | 裁判生成的记录；参与者模型名称仍自报 |
+| 严格公开模型赛事 | 尚未宣布正式结果 | 还需独立部署、统一预算与工具、保密留出种子和监督模型身份 |
+
+**发布仓库和 Pages，不等于已经在互联网上部署独立裁判。** 正式评测不能把服务器文件系统或其他种子的答案提供给模型。详见 [公平性与安全边界](./v2/FAIRNESS.md)。
+
+## 本地运行
+
+```bash
+npm ci
+npm start
+```
+
+打开 `http://127.0.0.1:8788/v2/`。自动测试环境为 Node.js 24。v2 裁判无需 Playwright 或模型 API；Playwright 用于浏览器测试与经典版包装层。
+
+```bash
+npm run check            # JavaScript 语法检查
+npm test                 # 引擎、边界、签名、重放与 API 回归
+npm run test:browser      # 桌面/手机宽度、聊天接力、恢复、导出
+npm run balance          # 9 类基线 × 8 个开发种子
+npm run corpus           # 重建公开开发数据和 SHA-256 清单
+npm run replay -- report.json
+npm run start:classic     # 保留的经典版与原 API，端口 8787
+```
+
+浏览器测试需要已安装的 Playwright Chromium；Windows 也可使用已有 Edge。独立裁判默认监听回环地址，不会自动暴露到公网。
+
+## 真正跑过的开发校准
+
+**72 局，不是某个 AI 模型的宣传分数。** 所有策略代码和逐局结果公开；8 个种子用于开发，不作为保密留出集。
+
+| 策略 | 通关 / 8 局 | 平均存活 | 平均分 |
+|---|---:|---:|---:|
+| 全放行 | 0 / 8 | 13.63 天 | 46.16 |
+| 全拒绝 | 0 / 8 | 23.38 天 | 45.07 |
+| 隔离优先、满位则拒绝 | 0 / 8 | 12.00 天 | 48.05 |
+| 只看证件差异 | 0 / 8 | 18.75 天 | 50.50 |
+| 任何异常就拒绝 | 0 / 8 | 31.75 天 | 56.62 |
+| 异常规则 + 动态政策 | 1 / 8 | 34.63 天 | 56.02 |
+| 公开证据 + 调查 + 动态政策 | 1 / 8 | 32.38 天 | 61.00 |
+| 上述策略 + 历史记忆 | 1 / 8 | 34.50 天 | 63.08 |
+
+读取隐藏身份的 **oracle 作弊对照** 为 8/8，只用于检查机制可行性，绝不进入玩家或模型排行榜。有一次记忆基线到达 42 天，却因期末延迟责任未能算作通关。
+
+完整分母、置信区间和源码哈希见 [校准报告](./v2/reports/BALANCE.md)。8 个种子不足以证明通关概率或任何模型的能力上限。**当前没有 Astra、Pro、Jev 的 v2 实测排名。**
+
+## 赛后能看到什么
+
+报告保留当时证据、公开理由和概率，以及后来发生的后果：日级资源变化、危险目标漏放率、无辜强制措施率、Brier 校准与预测覆盖、提前阻断网络、适应后漏放、期末清算和完整重放材料。所有比例提供分子/分母。
+
+坏结果不自动等于坏决策；这里没有为每个局面伪造一个“唯一正确动作”。模型画像应建立在多局证据上，而不是一局胜负或几句漂亮解释上。
+
+## 项目导航
+
+- [新版完整中文说明与 API](./v2/README.md)、[公平性说明](./v2/FAIRNESS.md)、[开发数据清单](./v2/data/manifest.json)。
+- [实际测试输出](./v2/reports/test-output.txt)、[浏览器测试记录](./v2/reports/browser-smoke.json)、[72 局原始记录](./v2/reports/balance.json)。
+- [经典版中文说明](./README.classic.zh-CN.md)、[经典版在线游戏](https://sstxww.github.io/blackgate-ai-game/play.html)、[经典版实验榜](https://sstxww.github.io/blackgate-ai-game/leaderboard.html)。旧榜不是 v2 新榜。
+- [贡献指南](./CONTRIBUTING.md)、[版本记录](./CHANGELOG.md)、[路线图](./ROADMAP.md)、[MIT 许可证](./LICENSE)。
+
+**下一步的严肃工作：更丰富的人工剧情与网络拓扑、保密留出集、真实模型的多种子统一评测。已有功能和未完成研究会继续分开标注。**

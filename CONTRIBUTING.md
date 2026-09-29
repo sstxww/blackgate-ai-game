@@ -1,3 +1,11 @@
+# v2 development
+
+Run `npm run check`, `npm test` and relevant browser/calibration tests. Any engine/content change requires a version bump and freshly generated source hashes/results. Keep classic game files intact unless a change explicitly targets classic mode. New clues must have meaningful benign alternatives; do not add hidden verdict labels to live observations. Do not publish private evaluation seeds or referee keys.
+
+Calibration policies are transparent controls, not model leaderboard entries. Public development instances are generated examples, not hand-authored independent questions.
+
+---
+
 # Contributing
 
 Thanks for helping make Blackgate AI Game a useful open benchmark.

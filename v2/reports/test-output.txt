@@ -1,0 +1,23 @@
+✔ SHA-256 and HMAC match Node cryptographic test vectors (6.9327ms)
+✔ world has persistent, valid, non-answer-encoding identities and graph (307.126ms)
+✔ observation and public archive omit hidden verdicts and seeds, with defensive copies (193.0676ms)
+✔ invalid/stale actions are transactional and cannot reroll or consume resources (202.0797ms)
+✔ investigations have exact costs, are non-repeatable, and do not consume arrival randomness (380.3066ms)
+✔ three isolation slots stay occupied for two days (216.7923ms)
+✔ tracking yields no immediate result and delivers on its promised day (213.028ms)
+✔ coercion has no immediate truth-dependent reward channel (321.3673ms)
+✔ opponent behavior ignores probabilities and reasons (655.8782ms)
+✔ control: a privileged oracle proves mechanical feasibility, not an AI score (1454.0807ms)
+✔ full reports replay exactly and reject altered scores, reasons or outcomes (6613.038ms)
+✔ adaptation is delayed and bounded, and keeps immutable identities (1444.4181ms)
+✔ day 42 cannot erase late harm, nor does missing prediction become fake calibration (1980.3003ms)
+✔ network investigation requires actual previously observed multi-person evidence (217.9848ms)
+✔ authoritative API: isolation, boundaries, idempotency, restart, locked reports and signed completion (6528.935ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20950.4731
