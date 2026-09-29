@@ -16,7 +16,7 @@ const normalized=rows=>normalizeScores(rows).rows;
 
 test('score-only envelopes cannot manufacture a behavior profile',()=>assert.throws(()=>buildReview({report:{score:100}}),/完整报告/));
 test('empty and short runs do not invent traits, probabilities or later phases',()=>{
- const r=buildReview(envelope());assert.match(r.style,/样本不足/);assert.equal(metric(r,'概率校准 Brier'),'未提供');assert.match(r.sections.find(x=>x.id==='phases').items[2],/不能评价/);assert(!JSON.stringify(r).includes('NaN'));assert.equal(r.sections.length,11);
+ const r=buildReview(envelope());assert.match(r.style,/样本不足/);assert.equal(metric(r,'概率校准 Brier'),'未提供');assert.match(r.sections.find(x=>x.id==='phases').items[2],/不能评价/);assert(!JSON.stringify(r).includes('NaN'));assert.equal(r.sections.length,15);
 });
 test('miss and coercion rates use their own known-label denominators',()=>{
  const r=buildReview(envelope([decision(1,{harmful:true}),decision(2,{harmful:true,action:'reject'}),decision(3,{action:'isolate'}),decision(4,{harmful:undefined})]));

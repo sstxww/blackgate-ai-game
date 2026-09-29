@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 24
       - run: node scripts/check.mjs
-      - run: node --test scripts/relay-client.test.mjs scripts/arena-score.test.mjs scripts/review.test.mjs
+      - run: node --test scripts/relay-client.test.mjs scripts/arena-score.test.mjs scripts/review.test.mjs scripts/review-psychology.test.mjs
       - name: Install isolated browser test dependencies
         run: npm ci
       - name: Install headless Chromium

@@ -1,0 +1,5 @@
+Prepared 125 tracked public files in .site. No private runtime directory is deployable.
+
+Verified: new psychology module, integrated analysis/UI/CSS and method documentation match source.
+Verified: scripts, v2/tests, .scratch-web, node_modules and .git are not in .site.
+Local build only; no deployment.

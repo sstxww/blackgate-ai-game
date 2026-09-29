@@ -1,5 +1,6 @@
 // Post-game only. This module never reads the live engine, hidden state or an API key.
-export const REVIEW_SCHEMA = 'blackgate-behavior-review/1';
+import {buildDecisionPsychology,psychologySections} from './review-psychology.mjs';
+export const REVIEW_SCHEMA = 'blackgate-behavior-review/2';
 const names = {allow:'放行', reject:'拒绝', isolate:'隔离'};
 const resources = {security:'治安', economy:'经济', trust:'民意', food:'粮食', health:'健康', gold:'城库', infiltration:'渗透'};
 const array = x => Array.isArray(x) ? x : [];
@@ -111,13 +112,16 @@ export function buildReview(envelope) {
     '社区成绩是用户自报；模型 ID、推理档位与日志可重放都不自动证明模型身份或没有偷看。不同服务商的同名推理档位不能视作等价算力。',
     '报告由本地确定性分析生成，不额外调用模型接口，不消耗额外模型额度；不会自动上传完整日志、原始提示词、API URL 或 API Key。'
   ]);
+  const psychology=buildDecisionPsychology(r);
+  sections.splice(2,0,...psychologySections(psychology));
+  sections.forEach((s,i)=>{s.title=String(i+1).padStart(2,'0')+' / '+s.title.replace(/^\d+ \/ /,'');});
   const selected=[];const seen=new Set();
   for(const x of [...misses,...coerced,...overconfident,...intercepted,...releasedGood]){
     const key=x.case_id||`${x.day}:${x.person_id}:${d.indexOf(x)}`;if(seen.has(key))continue;seen.add(key);
     selected.push({title:evidenceName(x),action:names[x.action],outcome:typeof x.harmful==='boolean'?(x.harmful?'赛后存在危险意图':'赛后无危险意图'):'赛后标签缺失',probability:finite(x.p_threat)&&x.p_threat>=0&&x.p_threat<=1?x.p_threat:null,reason:cleanText(x.reason||'未记录公开理由'),visible:array(x.visible).slice(0,12).map(e=>cleanText(e.text)),evidence:array(x.evidence_ids).slice(0,20).map(e=>cleanText(e,100))});
     if(selected.length>=12)break;
   }
-  return {schema:REVIEW_SCHEMA,style,sample_size:n,metrics,sections,cases:selected,case_note:'最多展示 12 个去重案例，优先需要复核的情况，再展示有利结果；不是随机抽样，也不代表全部决策。完整 JSON 可查看所有案件。'};
+  return {schema:REVIEW_SCHEMA,style,psychology,sample_size:n,metrics,sections,cases:selected,case_note:'最多展示 12 个去重案例，优先需要复核的情况，再展示有利结果；不是随机抽样，也不代表全部决策。完整 JSON 可查看所有案件。'};
 }
 
 export function reviewMarkdown(review) {
