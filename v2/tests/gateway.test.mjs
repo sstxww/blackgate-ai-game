@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import gateway from '../../gateway/worker.mjs';
-import {RelayClient} from '../../relay-client.mjs';
+import {RelayClient,normalizeApiKey} from '../../relay-client.mjs';
 
 test('gateway answers browser preflight without provider auth',async()=>{
   const req=new Request('https://gateway.example/',{
@@ -37,7 +37,9 @@ test('relay client sends provider target and path to explicit gateway',async()=>
   assert.equal(seen.method,'GET');
   assert.equal(seen.headers.get('x-blackgate-target'),'https://provider.example/v1');
   assert.equal(seen.headers.get('x-blackgate-path'),'/models');
-  assert.equal(seen.headers.get('authorization'),'Bearer sk-test-only-not-real');
+  assert.equal(seen.headers.get('authorization'),null);
+  assert.equal(seen.headers.get('x-blackgate-key'),'sk-test-only-not-real');
+  assert.equal(seen.headers.get('x-blackgate-auth'),'bearer');
   assert.equal(client.transport,'gateway');
 });
 
@@ -130,6 +132,9 @@ test('relay client prefers public gateway on first model discovery',async()=>{
   assert.equal(seen[0].url,'https://public-gateway.example/api/gateway');
   assert.equal(seen[0].headers.get('x-blackgate-target'),'https://provider.example/v1');
   assert.equal(seen[0].headers.get('x-blackgate-path'),'/models');
+  assert.equal(seen[0].headers.get('authorization'),null);
+  assert.equal(seen[0].headers.get('x-blackgate-key'),'sk-public-first-test');
+  assert.equal(seen[0].headers.get('x-blackgate-auth'),'bearer');
   assert.equal(client.transport,'public-gateway');
 });
 
@@ -197,5 +202,35 @@ test('gateway accepts dedicated Blackgate key transport',async()=>{
     assert.match(res.headers.get('access-control-allow-headers'),/X-Blackgate-Key/i);
   }finally{
     globalThis.fetch=originalFetch;
+  }
+});
+
+
+test('API key normalization removes common clipboard artifacts before headers are built',()=>{
+  assert.equal(normalizeApiKey('  Bearer  sk-abc-123  '),'sk-abc-123');
+  assert.equal(normalizeApiKey('“sk-abc-123”'),'sk-abc-123');
+  assert.equal(normalizeApiKey('sk-abc\u200b-123'),'sk-abc-123');
+  assert.equal(normalizeApiKey('ｓｋ－ａｂｃ－１２３'),'sk-abc-123');
+});
+
+test('gateway client selects protocol-specific auth reconstruction',async()=>{
+  for(const [protocol,expected] of [['chat','bearer'],['responses','bearer'],['anthropic','anthropic'],['gemini','gemini']]){
+    let seen;
+    const fakeFetch=async(url,init)=>{
+      seen=new Headers(init.headers);
+      const data=protocol==='gemini'?{models:[{name:'models/x',supportedGenerationMethods:['generateContent']}]}:{data:[{id:'x'}]};
+      return new Response(JSON.stringify(data),{status:200,headers:{'Content-Type':'application/json'}});
+    };
+    const client=new RelayClient({
+      url:protocol==='gemini'?'https://generativelanguage.googleapis.com/v1beta':'https://provider.example/v1',
+      key:'sk-protocol-test',
+      protocol,
+      gateway:'https://gateway.example/relay',
+      fetchImpl:fakeFetch
+    });
+    await client.models();
+    assert.equal(seen.get('x-blackgate-key'),'sk-protocol-test');
+    assert.equal(seen.get('x-blackgate-auth'),expected);
+    assert.equal(seen.get('authorization'),null);
   }
 });
