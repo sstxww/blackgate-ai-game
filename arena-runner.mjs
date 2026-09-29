@@ -1,8 +1,8 @@
 import {publicGame as game} from './arena-app.mjs';
-import {RelayClient,parseDecision} from './relay-client.mjs?v=20260929-3';
+import {RelayClient,parseDecision} from './relay-client.mjs?v=20260929-4';
 import {AudioEngine,publicPortrait} from './arena-art.mjs';
 import {renderBoard,shareScore} from './arena-board.mjs';
-import {PUBLIC_GATEWAY_URL} from './gateway-config.mjs?v=20260929-3';
+import {PUBLIC_GATEWAY_URL} from './gateway-config.mjs?v=20260929-4';
 const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const sound=new AudioEngine();sound.enabled=false;window.BlackgateSound={start:()=>{if(sound.enabled)sound.start();},sfx:type=>sound.sfx(type)};
 let client=null,modelList=[],modelsAbort=null,epoch=0,control=null,wakeLock=null;
@@ -10,7 +10,19 @@ let running=false,paused=false,mode='human',requests=0,total=0,actions=0,logs=[]
 const safe=x=>{const s=typeof x==='string'?x:JSON.stringify(x);return client?client.sanitize(s):s.replace(/\b(?:sk-[\w-]{8,}|apikey_[\w-]{8,}|AIza[\w-]{20,})\b/g,'[REDACTED]');};
 function note(message){$('runnerNote').textContent=safe(message);}
 function identity(){return {username:$('username').value.trim()||'Anonymous',model:$('manualModel').value.trim()||$('modelSelect').value,effort:$('effort').value};}
-function createClient(){return new RelayClient({url:$('apiUrl').value,key:$('apiKey').value,protocol:$('protocol').value,gateway:$('gatewayUrl')?.value||'',publicGateway:PUBLIC_GATEWAY_URL});}
+function createClient(){
+  const mode=$('connectionMode')?.value||'public';
+  const custom=$('gatewayUrl')?.value.trim()||'';
+  if(mode==='custom'&&!custom)throw Error('选择“自定义网关”后需要填写网关地址。');
+  return new RelayClient({
+    url:$('apiUrl').value,
+    key:$('apiKey').value,
+    protocol:$('protocol').value,
+    gateway:mode==='custom'?custom:'',
+    publicGateway:mode==='public'?PUBLIC_GATEWAY_URL:'',
+    preferPublic:mode==='public'
+  });
+}
 function log(entry){
   const clean=JSON.parse(safe({time:new Date().toISOString(),...entry}));logs.push(clean);
   const box=$('logRows');box.replaceChildren();
@@ -60,7 +72,7 @@ async function fetchModels(){
   try{
     client?.clear();client=createClient();const fetched=await client.models(modelsAbort.signal);
     modelList=fetched.filter(id=>safe(id)===id);$('manualModel').value='';renderModels();
-    $('connectionStatus').textContent=`已获取 ${modelList.length} 个模型 · ${client.protocol} · ${client.transport==='public-gateway'?'公共兼容网关':client.transport==='gateway'?'自定义兼容网关':'浏览器直连'} · 密钥只在当前页面内存`;
+    $('connectionStatus').textContent=`已获取 ${modelList.length} 个模型 · ${client.protocol} · ${client.transport==='public-gateway'?'Blackgate 公共网关':client.transport==='gateway'?'自定义网关':'浏览器直连'} · 密钥只在当前页面内存`;
   }catch(e){if(e.name!=='AbortError'){$('connectionStatus').textContent=safe(e.message);$('connectionHelp').open=true;}modelList=[];renderModels();}
   finally{$('fetchModels').disabled=false;}
 }
@@ -158,7 +170,7 @@ $('startAI').onclick=startAI;$('stopAI').onclick=stop;
 $('pauseAI').onclick=()=>{if(!running)return;paused=!paused;$('runState').textContent=paused?'已暂停 · 当前响应保留，不落子':'继续自主判断';note(paused?'不会发起新请求；已经发出的响应会暂存，继续后再执行。':'从当前世界状态继续，不重开本局。');controls();};
 $('clearKey').onclick=()=>{stop();modelsAbort?.abort();client?.clear();client=null;$('apiKey').value='';$('connectionStatus').textContent='密钥已从当前页面清除。';};
 $('modelSearch').oninput=renderModels;$('modelSelect').onchange=()=>{$('manualModel').value='';};
-for(const id of ['apiUrl','apiKey','protocol','gatewayUrl'])$(id).addEventListener('change',()=>{if(running)return;modelList=[];renderModels();$('connectionStatus').textContent='连接信息已修改，请重新获取模型。';});
+for(const id of ['apiUrl','apiKey','protocol','connectionMode','gatewayUrl'])$(id).addEventListener('change',()=>{if(running)return;modelList=[];renderModels();$('connectionStatus').textContent='连接信息已修改，请重新获取模型。';});
 $('exportLog').onclick=exportLog;$('shareScore').onclick=()=>{const r=game.report();if(r)shareScore(r);};
 $('boardType').onchange=renderBoard;$('boardScope').onchange=renderBoard;
 $('soundToggle').onclick=()=>{sound.start();sound.setEnabled(!sound.enabled);if(!sound.enabled)sound.ctx?.suspend().catch(()=>{});else sound.ctx?.resume().catch(()=>{});$('soundToggle').textContent=sound.enabled?'♫ 音乐已开启':'♫ 开启音乐';$('soundToggle').setAttribute('aria-pressed',String(sound.enabled));};
