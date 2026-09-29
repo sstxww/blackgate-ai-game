@@ -1,0 +1,24 @@
+{
+  "passed": 10,
+  "checks": [
+    "Public AI default, model/effort groups, medians and human/custom/difficulty isolation",
+    "Prompt cohorts, requested-effort filter, search, model/run tabs and submission links",
+    "390px ranking header, filters and responsive result cards",
+    "Late community response cannot overwrite selected local source",
+    "Network error, malformed JSON and empty public data clear old rankings without fallback",
+    "Corrupt local storage is an error, not a fabricated empty dataset",
+    "Real referee + synthetic autonomous decisions finish, open review, accessible keyboard dismissal and 11 detailed chapters",
+    "JSON/Markdown/profile exports, effort metadata retained and no API key/URL/raw prompt stored",
+    "Finished auto-run local score appears in the separate AI leaderboard with requested effort status",
+    "Human start and decisions remain usable and do not open an AI completion dialog"
+  ],
+  "page_errors": [],
+  "synthetic_relay": true,
+  "real_vendor_calls": 0,
+  "model_fixture_requests": 125,
+  "production_submissions": 0,
+  "blocked_external_requests": 0,
+  "browser": "153.0.8010.12",
+  "checked_at": "2026-09-29T14:54:43.192Z",
+  "screenshots": "Synthetic fixtures only; not real model performance"
+}

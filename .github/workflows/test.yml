@@ -13,4 +13,11 @@ jobs:
         with:
           node-version: 24
       - run: node scripts/check.mjs
+      - run: node --test scripts/relay-client.test.mjs scripts/arena-score.test.mjs scripts/review.test.mjs
+      - name: Install isolated browser test dependencies
+        run: npm ci
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Review and leaderboard browser regression
+        run: node scripts/review-browser.test.mjs
       - run: node --test --test-concurrency=1 v2/tests/*.test.mjs

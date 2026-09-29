@@ -1,0 +1,33 @@
+✔ SHA-256 and HMAC match Node cryptographic test vectors (8.7443ms)
+✔ world has persistent, valid, non-answer-encoding identities and graph (338.1589ms)
+✔ observation and public archive omit hidden verdicts and seeds, with defensive copies (209.118ms)
+✔ invalid/stale actions are transactional and cannot reroll or consume resources (202.3332ms)
+✔ investigations have exact costs, are non-repeatable, and do not consume arrival randomness (395.0088ms)
+✔ three isolation slots stay occupied for two days (243.309ms)
+✔ tracking yields no immediate result and delivers on its promised day (240.5381ms)
+✔ coercion has no immediate truth-dependent reward channel (366.8102ms)
+✔ opponent behavior ignores probabilities and reasons (765.0421ms)
+✔ control: a privileged oracle proves mechanical feasibility, not an AI score (1693.8149ms)
+✔ full reports replay exactly and reject altered scores, reasons or outcomes (7939.6491ms)
+✔ adaptation is delayed and bounded, and keeps immutable identities (1667.6637ms)
+✔ day 42 cannot erase late harm, nor does missing prediction become fake calibration (2282.4982ms)
+✔ network investigation requires actual previously observed multi-person evidence (250.0579ms)
+✔ gateway answers browser preflight without provider auth (32.4523ms)
+✔ relay client sends provider target and path to explicit gateway (4.2241ms)
+✔ gateway forwards only approved headers and preserves provider response (2.0925ms)
+✔ gateway rejects private/IP targets and upstream redirects (1.7793ms)
+✔ relay client prefers public gateway on first model discovery (0.9684ms)
+✔ public gateway discovery may fall back to direct only if the gateway itself is unreachable (0.7529ms)
+✔ gateway is not a general-purpose open proxy (0.607ms)
+✔ gateway accepts dedicated Blackgate key transport (0.8112ms)
+✔ API key normalization removes common clipboard artifacts before headers are built (2.4393ms)
+✔ gateway client selects protocol-specific auth reconstruction (1.8131ms)
+✔ authoritative API: isolation, boundaries, idempotency, restart, locked reports and signed completion (6776.5848ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23758.2444

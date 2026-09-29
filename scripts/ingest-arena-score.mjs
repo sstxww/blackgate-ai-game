@@ -16,11 +16,13 @@ if(!Number.isFinite(x.score)||x.score<0||x.score>100)fail('Invalid score');
 if(!str(x.username,50)||!x.username.trim()||!str(x.model))fail('Invalid name or model');
 if(!['auto','none','minimal','low','medium','high','xhigh','max'].includes(x.effort))fail('Invalid effort');
 if(!str(x.prompt_hash||'',64)||!str(x.prompt_profile||'',32))fail('Invalid prompt metadata');
+if(x.effort_status!==undefined&&(!str(x.effort_status,200)||/\b(?:sk-|apikey_|AIza)/.test(x.effort_status)))fail('Invalid effort status');
+if(x.protocol!==undefined&&(!str(x.protocol,40)||/\b(?:sk-|apikey_|AIza)/.test(x.protocol)))fail('Invalid protocol');
 if(!str(x.ended_at,40)||!Number.isFinite(Date.parse(x.ended_at)))fail('Invalid timestamp');
 for(const value of [x.username,x.model])if(/\b(?:sk-|apikey_|AIza)/.test(value))fail('Possible secret in score');
 const path='data/arena-community.json';const doc=JSON.parse(fs.readFileSync(path,'utf8'));
 if(!doc.runs.some(r=>r.id===x.run_id)){
-  const row={id:x.run_id,username:x.username,model:x.model,participant_type:x.participant_type,effort:x.effort,prompt_hash:x.prompt_hash,prompt_profile:x.prompt_profile,version:x.version,content_version:x.content_version,difficulty:x.difficulty,completed:x.completed,days_survived:x.days_survived,score:x.score,ended_at:x.ended_at,source:'community-self-reported',submitted_by:String(process.env.ISSUE_USER||'').slice(0,100),github_issue:Number(process.env.ISSUE_NUMBER||0)};
+  const row={id:x.run_id,username:x.username,model:x.model,participant_type:x.participant_type,effort:x.effort,effort_status:x.effort_status||'未记录 / 未确认',protocol:x.protocol||'未记录',prompt_hash:x.prompt_hash,prompt_profile:x.prompt_profile,version:x.version,content_version:x.content_version,difficulty:x.difficulty,completed:x.completed,days_survived:x.days_survived,score:x.score,ended_at:x.ended_at,source:'community-self-reported',submitted_by:String(process.env.ISSUE_USER||'').slice(0,100),github_issue:Number(process.env.ISSUE_NUMBER||0)};
   doc.runs.push(row);doc.updated_at=new Date().toISOString();fs.writeFileSync(path,JSON.stringify(doc,null,2)+'\n');
 }
 console.log('Score format checked; self-reported only. No gameplay or identity verification implied.');
