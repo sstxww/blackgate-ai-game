@@ -18,7 +18,7 @@ function cors(origin){
   return {
     'Access-Control-Allow-Origin':origin,
     'Access-Control-Allow-Methods':'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers':'Authorization, Content-Type, X-API-Key, X-Goog-API-Key, Anthropic-Version, Anthropic-Beta, Anthropic-Dangerous-Direct-Browser-Access, X-Blackgate-Target, X-Blackgate-Path',
+    'Access-Control-Allow-Headers':'Authorization, Content-Type, X-API-Key, X-Goog-API-Key, Anthropic-Version, Anthropic-Beta, Anthropic-Dangerous-Direct-Browser-Access, X-Blackgate-Target, X-Blackgate-Path, X-Blackgate-Key, X-Blackgate-Auth',
     'Access-Control-Expose-Headers':'Retry-After, X-Request-Id, Request-Id, X-Blackgate-Gateway',
     'Access-Control-Max-Age':'86400',
     'Cache-Control':'no-store',
@@ -57,11 +57,28 @@ function upstreamUrl(base,path){
   if(out.origin!==base.origin||(basePath&&!(out.pathname===basePath||out.pathname.startsWith(basePath+'/'))))throw Error('上游路径越界。');
   return out;
 }
+function normalizeKey(raw){
+  let s=String(raw||'').normalize('NFKC').trim();
+  s=s.replace(/^Bearer\s+/i,'');
+  s=s.replace(/[\u200B-\u200D\u2060\uFEFF]/g,'');
+  s=s.replace(/\s+/g,'');
+  s=s.replace(/^[\"'“”‘’]+|[\"'“”‘’]+$/g,'');
+  return s;
+}
 function forwardHeaders(request){
   const h=new Headers();
   for(const name of REQUEST_HEADERS){
     const v=request.headers.get(name);
     if(v)h.set(name,v);
+  }
+  const gatewayKey=normalizeKey(request.headers.get('x-blackgate-key'));
+  if(gatewayKey){
+    const scheme=(request.headers.get('x-blackgate-auth')||'bearer').toLowerCase();
+    h.delete('authorization');h.delete('x-api-key');h.delete('x-goog-api-key');
+    if(scheme==='bearer')h.set('authorization','Bearer '+gatewayKey);
+    else if(scheme==='anthropic')h.set('x-api-key',gatewayKey);
+    else if(scheme==='gemini')h.set('x-goog-api-key',gatewayKey);
+    else throw Error('无效的 X-Blackgate-Auth。');
   }
   return h;
 }
@@ -123,14 +140,17 @@ export default {
 
     let upstream;
     try{
+      const headers=forwardHeaders(request);
       upstream=await fetch(upstreamUrl(target,path),{
         method:request.method,
-        headers:forwardHeaders(request),
+        headers,
         body,
         redirect:'manual'
       });
-    }catch{
-      return reply(origin,502,{error:{message:'兼容网关无法连接上游。',type:'gateway_upstream_error'}});
+    }catch(e){
+      const message=e?.message==='无效的 X-Blackgate-Auth。'?e.message:'兼容网关无法连接上游。';
+      const status=message==='无效的 X-Blackgate-Auth。'?400:502;
+      return reply(origin,status,{error:{message,type:status===400?'gateway_auth_error':'gateway_upstream_error'}});
     }
 
     if(upstream.status>=300&&upstream.status<400){
