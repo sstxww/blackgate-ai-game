@@ -48,10 +48,9 @@ function parsePath(raw){
   return p;
 }
 function upstreamUrl(base,path){
-  const baseText=base.origin+base.pathname;
-  const out=new URL(baseText+path);
-  const basePath=base.pathname.replace(/\/+$/,'');
-  if(out.origin!==base.origin||!(out.pathname===basePath||out.pathname.startsWith(basePath+'/')))throw Error('上游路径越界。');
+  const basePath=base.pathname==='/'?'':base.pathname.replace(/\/+$/,'');
+  const out=new URL(base.origin+basePath+path);
+  if(out.origin!==base.origin||(basePath&&!(out.pathname===basePath||out.pathname.startsWith(basePath+'/'))))throw Error('上游路径越界。');
   return out;
 }
 function forwardHeaders(request){
