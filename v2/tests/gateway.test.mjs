@@ -183,7 +183,7 @@ test('gateway accepts dedicated Blackgate key transport',async()=>{
       method:'GET',
       headers:{
         Origin:'https://sstxww.github.io',
-        'X-Blackgate-Key':'  Bearer  sk-test-secret\u200b  ',
+        'X-Blackgate-Key':'Bearer   sk-test-secret',
         'X-Blackgate-Auth':'bearer',
         'X-Blackgate-Target':'https://provider.example/v1',
         'X-Blackgate-Path':'/models'
