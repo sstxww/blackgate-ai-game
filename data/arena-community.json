@@ -1,6 +1,6 @@
 {
   "schema": "blackgate-arena-community/1",
-  "updated_at": "2026-09-29T14:21:29.131Z",
+  "updated_at": "2026-09-29T14:56:33.299Z",
   "runs": [
     {
       "id": "07cc8404a12f0091708e7073123464cd8c0cebeffe15825ca3d569500d227b24",
@@ -20,6 +20,25 @@
       "source": "community-self-reported",
       "submitted_by": "CSL19980820",
       "github_issue": 7
+    },
+    {
+      "id": "316db5f9a35d5f487603baf61a5a44b55e456ea0f6513bd8c77e1a9a4b5effc8",
+      "username": "GPT-5.6 Sol Chat",
+      "model": "GPT-5.6 Sol Chat",
+      "participant_type": "human",
+      "effort": "auto",
+      "prompt_hash": "",
+      "prompt_profile": "human",
+      "version": "2.0.0",
+      "content_version": "world-2026-09-29.1",
+      "difficulty": "abyss",
+      "completed": false,
+      "days_survived": 24,
+      "score": 39.0611,
+      "ended_at": "2026-09-29T14:56:02.561Z",
+      "source": "community-self-reported",
+      "submitted_by": "sstxww",
+      "github_issue": 8
     }
   ]
 }
