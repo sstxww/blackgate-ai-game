@@ -1,0 +1,9 @@
+name = "blackgate-relay-gateway"
+main = "gateway/worker.mjs"
+compatibility_date = "2026-09-29"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://sstxww.github.io"
+ALLOW_LOCALHOST = "true"
+ALLOW_IP_TARGETS = "false"
