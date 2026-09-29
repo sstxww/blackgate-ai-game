@@ -1,0 +1,16 @@
+{
+  "passed": 7,
+  "results": [
+    "Human start, action, original portrait and music control",
+    "Pause holds in-flight response without advancing or new calls",
+    "Resume applies once; stop cancels and prevents late-response action",
+    "Continuous loop, recall, investigation, day advance, endgame report and local board (127 mock calls, day 11)",
+    "Switch modes without touching existing AI result",
+    "390px mobile setup and live dossier have no document horizontal overflow",
+    "No browser page exceptions; API key absent from local/session storage"
+  ],
+  "synthetic_relay": true,
+  "real_vendor_calls": 0,
+  "errors": [],
+  "checked_at": "2026-09-29T10:57:22.788Z"
+}

@@ -1,0 +1,64 @@
+name: Record arena community score
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    if: startsWith(github.event.issue.title, '[Blackgate Arena]')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate and record run
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: node scripts/ingest-arena-score.mjs
+      - name: Commit leaderboard
+        run: |
+          if git diff --quiet; then
+            echo "No leaderboard change."
+          else
+            git config user.name "blackgate-leaderboard[bot]"
+            git config user.email "blackgate-leaderboard[bot]@users.noreply.github.com"
+            git add data/arena-community.json
+            git commit -m "Record arena score #${{ github.event.issue.number }}"
+            git push
+          fi
+      - name: Prepare tracked public files only
+        run: node scripts/prepare-pages.mjs
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .site
+      - name: Deploy updated leaderboard
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Confirm submission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body "✅ 该成绩已通过格式校验并记录到社区自报榜。它不等同于固定种子验证成绩。"
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"

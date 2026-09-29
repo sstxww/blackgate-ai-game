@@ -30,6 +30,7 @@ jobs:
       - name: Syntax and deterministic referee regression
         run: |
           node scripts/check.mjs
+          node --test scripts/relay-client.test.mjs scripts/arena-score.test.mjs
           node --test --test-concurrency=1 v2/tests/*.test.mjs
       - name: Prepare tracked public files only
         run: node scripts/prepare-pages.mjs

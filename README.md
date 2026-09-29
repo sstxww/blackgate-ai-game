@@ -1,9 +1,9 @@
-<p align="center"><img src="./v2/reports/practice-desktop.png" alt="Blackgate II：长程决策竞技场" width="100%" /></p>
+<p align="center"><img src="./assets/arena-preview.png" alt="Blackgate II：长程决策竞技场" width="100%" /></p>
 
 <h1 align="center">Blackgate II · 地下城安全审查员</h1>
 <p align="center"><b>42 天 · 不完全信息 · 会适应你的对手 · 必须偿还的长期后果</b></p>
 <p align="center"><a href="./README.md">简体中文</a> · <a href="./README.en.md">English</a></p>
-<p align="center"><a href="https://sstxww.github.io/blackgate-ai-game/v2/"><b>🎮 新版在线挑战</b></a> · <a href="https://sstxww.github.io/blackgate-ai-game/v2/#chat"><b>💬 普通聊天 AI 接力</b></a> · <a href="./v2/README.md"><b>📖 完整中文规则</b></a> · <a href="./v2/reports/BALANCE.md"><b>🧪 实测证据</b></a></p>
+<p align="center"><a href="https://sstxww.github.io/blackgate-ai-game/challenge.html?mode=human"><b>🎮 人类挑战</b></a> · <a href="https://sstxww.github.io/blackgate-ai-game/challenge.html?mode=ai"><b>🤖 API 自动 AI 挑战</b></a> · <a href="https://sstxww.github.io/blackgate-ai-game/challenge.html#board"><b>🏆 排行榜</b></a> · <a href="./WEB_ARENA.md"><b>📖 网页使用说明</b></a></p>
 <p align="center"><img src="https://img.shields.io/github/stars/sstxww/blackgate-ai-game?style=social" alt="GitHub stars" /> <img src="https://img.shields.io/badge/version-2.0.0-d0b779" alt="version" /> <img src="https://img.shields.io/badge/license-MIT-8dcbb0" alt="license" /></p>
 
 > **守住一扇门不难。守住一座仍然值得生活的城市，才是考验。**
@@ -30,40 +30,33 @@
 
 另有 16 种事件机制、48 种证据表述、12 种自述背景，以及运行时生成器。**这些是程序生成的关系世界实例，不是假称几千道手写剧情。** 公共实例供开发、审计和测试使用；正式裁判使用新生成的私有种子，不抽取公开答案。
 
-## 三步让聊天 AI 玩
+## 两种挑战方式，一个完整游戏
 
-1. 打开 [新版页面](https://sstxww.github.io/blackgate-ai-game/v2/)，新开一局。
-2. 点击「复制玩家可见状态 + 规则」，发给你的聊天 AI。
-3. 把 AI 回复的动作 JSON 粘回网页执行，继续下一回合。
+**人类挑战：** 输入昵称，开始执勤。原版人物、审查桌、纸质档案与环境音乐回归；点击右上角开启音乐。
 
-不用 Codex，不用电脑控制，也不需要把 API Key 填到网页里。页面会生成开局说明、公开状态和协议要求。人类可以直接点击同一套操作。
+**AI 挑战：** 填中转站 URL 与 API Key → 获取模型 → 选择模型和推理等级 → 开始。AI 会自动调查、检索历史、做决定、制定政策、推进下一天并生成复盘，不再需要复制粘贴接力。
 
-```json
-{
-  "revision": 0,
-  "action": "investigate",
-  "test": "registry",
-  "reason": "先核验文书差异，避免把登记错误直接当作危险身份。"
-}
-```
+支持实时模型列表，不限制国内外模型品牌；适配 Chat Completions、Responses、Anthropic Messages 和 Gemini 原生协议。具体服务商需允许浏览器 CORS，模型也必须支持所选参数。高级连接设置、难度与自定义提示词默认折叠。
 
-`revision` 使用当前状态值；概率字段 `p_threat` 表示该对象有危险意图的概率，非动作自信程度。理由是可公开的简短摘要，不要求私密思维链。
+**本项目不保存 API Key。** Key 仅留在页面内存和发往用户所选服务商的请求头中，不进入本机日志、报告、排行榜或 GitHub。页面会提示计费、跨域和档位限制，不把不支持的档位偷偷降级。详见 [网页操作、密钥隐私与兼容边界](./WEB_ARENA.md)。
 
 ## 在线练习 ≠ 服务端验证
 
 | 模式 | 现在可用 | 成绩性质 |
 |---|---|---|
-| GitHub Pages 新版 | 在线人类游戏、聊天接力、恢复、报告导出 | 当前浏览器练习记录；客户端可检查源码，不能防止有权限的玩家偷看 |
+| GitHub Pages 新版 | 人类挑战、API 自动 AI、报告导出、本机榜与公开社区自报榜 | 不是服务端防作弊认证；公开摘要由用户主动在 GitHub 提交 |
 | 独立 Node 裁判 | API、同源 UI、会话隔离、持久恢复、赛后签名、裁判本地共享榜 | 裁判生成的记录；参与者模型名称仍自报 |
 | 严格公开模型赛事 | 尚未宣布正式结果 | 还需独立部署、统一预算与工具、保密留出种子和监督模型身份 |
 
 **发布仓库和 Pages，不等于已经在互联网上部署独立裁判。** 正式评测不能把服务器文件系统或其他种子的答案提供给模型。详见 [公平性与安全边界](./v2/FAIRNESS.md)。
 
-## 并行新增的经典版全自动测试台
+## 日志与排行榜
 
-仓库中的 [AI 全自动测试台](https://sstxww.github.io/blackgate-ai-game/autoplay.html) 和 [AUTOPLAY.md](./AUTOPLAY.md) 已合并保留，可配置中转接口、模型与推理等级后连续运行。**该入口当前驱动经典版 14 天游戏，不是 v2 的 42 天协议。** 新版请使用上方 v2 页面、聊天接力或独立裁判 API；两个版本的成绩不能混排。
+每步记录公开理由、威胁概率、证据引用、资源变化、请求耗时与服务商返回的 Token。完成后生成 JSON / Markdown 复盘并自动进入本机榜；公开社区榜通过用户主动提交 GitHub Issue 进行格式校验收录，不上传 Key、接口地址或完整日志。
 
-## 本地运行
+人类与 AI、不同难度、引擎/内容版本分开；没有测试数据就不预排模型。社区榜是自报，不冒充正式认证。网页层与 v2/ 游戏机制独立维护，避免干扰并行功能开发。
+
+## 引擎本地开发与回归
 
 ```bash
 npm ci
@@ -73,6 +66,8 @@ npm start
 打开 `http://127.0.0.1:8788/v2/`。自动测试环境为 Node.js 24。v2 裁判无需 Playwright 或模型 API；Playwright 用于浏览器测试与经典版包装层。
 
 ```bash
+node --test scripts/relay-client.test.mjs  # 网页接口与密钥隔离
+node scripts/arena-browser.test.mjs       # 自动循环/暂停/停止/手机布局
 npm run check            # JavaScript 语法检查
 npm test                 # 引擎、边界、签名、重放与 API 回归
 npm run test:browser      # 桌面/手机宽度、聊天接力、恢复、导出
@@ -113,7 +108,7 @@ npm run start:classic     # 保留的经典版与原 API，端口 8787
 
 - [新版完整中文说明与 API](./v2/README.md)、[公平性说明](./v2/FAIRNESS.md)、[开发数据清单](./v2/data/manifest.json)。
 - [实际测试输出](./v2/reports/test-output.txt)、[浏览器测试记录](./v2/reports/browser-smoke.json)、[72 局原始记录](./v2/reports/balance.json)。
-- [经典版中文说明](./README.classic.zh-CN.md)、[经典版在线游戏](https://sstxww.github.io/blackgate-ai-game/play.html)、[经典版实验榜](https://sstxww.github.io/blackgate-ai-game/leaderboard.html)。旧榜不是 v2 新榜。
+- [经典版中文说明](./README.classic.zh-CN.md)、[历史成绩数据](./data/community-runs.json)。原始代码与历史材料保留，但公开网页统一为人类 / API AI 两个入口。
 - [贡献指南](./CONTRIBUTING.md)、[版本记录](./CHANGELOG.md)、[路线图](./ROADMAP.md)、[MIT 许可证](./LICENSE)。
 
 **下一步的严肃工作：更丰富的人工剧情与网络拓扑、保密留出集、真实模型的多种子统一评测。已有功能和未完成研究会继续分开标注。**
